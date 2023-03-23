@@ -1,2 +1,2 @@
 # magcalc
-Calculate spin-wave excitation based on the linear spin-wave theory.
+Calculate spin-wave excitations based on the linear spin-wave theory.
