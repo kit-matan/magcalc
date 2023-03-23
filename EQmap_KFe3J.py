@@ -1,0 +1,101 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Aug 13 01:22:57 2018
+
+@author: Kit Matan
+
+Create an intensity contour map of Q and energy for spin-waves in KFe3(OH)6(SO4)2
+"""
+import numpy as np
+import timeit
+import magcalc as mc
+import matplotlib.pyplot as plt
+from matplotlib.colors import LogNorm
+import pickle
+
+if __name__ == '__main__':
+    # spin-wave intensity S(Q,\omega)
+    st = timeit.default_timer()
+    # jarosite
+    # S = 5.0 / 2.0  # spin value
+    # p = [3.23, 0.11, 0.218, -0.195, 0]   # spin Hamiltonian parameter [J1, J2, Dy, Dz, H]
+    # p = [3.23, 0.11, 0.218, -0.195, 0]   # spin Hamiltonian parameter [J1, J2, Dy, Dz, H]
+
+    newcalc = 1
+
+    # CCSF
+    S = 1.0 / 2.0
+    p = [12.8, -1.23, 0.063 * 12.8, -0.25 * 12.8, 0]
+
+    nspins = 3  # number of spins in a unit cell
+
+    qsx = np.arange(-np.pi / np.sqrt(3), 2 * np.pi / np.sqrt(3) + 0.02, 0.02)
+    qsy = np.arange(-np.pi, 2 * np.pi + 0.02, 0.02)
+    q = []
+    for i in range(len(qsx)):
+        q.append(np.array([qsx[i], 0, 0]))
+    for i in range(len(qsy)):
+        q.append(np.array([0, qsy[i], 0]))
+
+    if newcalc == 1:
+        qout, En, Sqwout = mc.calc_Sqw(S, q, p, nspins, 'KFe3J', 'r')
+        with open('pckFiles/KFe3J_EQmap_En.pck', 'wb') as outEn:
+            outEn.write(pickle.dumps(En))
+        with open('pckFiles/KFe3J_EQmap_Sqw.pck', 'wb') as outSqwout:
+            outSqwout.write(pickle.dumps(Sqwout))
+    else:
+        with open('pckFiles/KFe3J_EQmap_En.pck', 'rb') as inEn:
+            En = pickle.loads(inEn.read())
+        with open('pckFiles/KFe3J_EQmap_Sqw.pck', 'rb') as inSqwout:
+            Sqwout = pickle.loads(inSqwout.read())
+
+    En_kx = En[:len(qsx)]
+    En_ky = En[len(qsx):]
+    Sqwout_kx = Sqwout[:len(qsx)]
+    Sqwout_ky = Sqwout[len(qsx):]
+
+    Ex = np.arange(0, 22.5, 0.05)
+    wid = 0.2
+    intMat_kx = np.zeros((len(Ex), len(qsx)))
+    fint_kx = 0
+    for i in range(len(Ex)):
+        for j in range(len(qsx)):
+            for band in range(len(En_kx[0])):
+                fint_kx = fint_kx + Sqwout_kx[j][band] * 1.0 / np.pi * \
+                    wid / 2 / ((Ex[i] - En_kx[j][band]) ** 2 + (wid / 2) ** 2)
+            intMat_kx[i, j] = fint_kx
+            fint_kx = 0
+
+    intMat_ky = np.zeros((len(Ex), len(qsy)))
+    fint_ky = 0
+    for i in range(len(Ex)):
+        for j in range(len(qsy)):
+            for band in range(len(En_ky[0])):
+                fint_ky = fint_ky + Sqwout_ky[j][band] * 1.0 / np.pi * \
+                    wid / 2 / ((Ex[i] - En_ky[j][band]) ** 2 + (wid / 2) ** 2)
+            intMat_ky[i, j] = fint_ky
+            fint_ky = 0
+
+    qsyn = 2 * np.pi + 2 * np.pi / np.sqrt(3) - qsy
+    # qsyn = np.flip(qsyn, 0)
+    qs = np.concatenate((qsx, qsyn))
+    X, Y = np.meshgrid(qs, Ex)
+    # intMat_ky = np.flip(intMat_ky, 1)
+    intMat = np.concatenate([intMat_kx, intMat_ky], axis=-1)
+    plt.pcolormesh(X, Y, intMat, norm=LogNorm(vmin=intMat.min(), vmax=intMat.max()), cmap='PuBu_r', shading='auto')
+    plt.xlim([-np.pi / np.sqrt(3), 2 * np.pi / np.sqrt(3) + 3 * np.pi])
+    plt.ylim([0, 20])
+    plt.xticks([])
+    plt.text(-0.1, -1, '$\Gamma$', fontsize=12)
+    plt.text(2 * np.pi / np.sqrt(3) - 0.1, -1, 'M', fontsize=12)
+    plt.text(2 * np.pi / np.sqrt(3) + 2 * np.pi - 4 * np.pi / 3 - 0.1, -1, 'K', fontsize=12)
+    plt.text(2 * np.pi / np.sqrt(3) + 2 * np.pi - 0.1, -1, '$\Gamma$', fontsize=12)
+    plt.ylabel('$\hbar\omega$ (meV)', fontsize=12)
+    plt.yticks(np.arange(0, 21, 5.0))
+    plt.title('Spin-waves for KFe$_3$(OH)$_6$(SO$_4$)$_2$')
+    plt.colorbar()
+    plt.show()
+    et = timeit.default_timer()
+    print('Total run-time: ', np.round((et-st) / 60, 2), ' min.')
+
