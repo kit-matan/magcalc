@@ -22,7 +22,7 @@ def plot_disp(p, S, nspins, wr):
         nspins: number of spins in a unit cell
         wr: 'w' for write to file, 'r' for read from file"""
     
-    intv = 0.1
+    intv = 0.05
     qsx = np.arange(0 - intv / 2 , 2 * np.pi / np.sqrt(3) + intv / 2, intv)
     qsy = np.arange(0 - intv / 2, 2 * np.pi + intv / 2 ,intv)
     q = []
