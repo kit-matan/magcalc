@@ -46,7 +46,10 @@ def atom_pos_ouc():
 
 
 def rot_mat(atom_list, p):
-    """rotation matrix to transform spins to global coordinates"""
+    """rotation matrix to transform spins to global coordinates
+       Inputs:
+           atom_list: list of angles with respect to the x-axis
+           p: list of parameters [J1, J2, Dy, Dz, H]"""
     J1, J2, Dy, Dz, H = p
 
     Z = J2 - sp.sqrt(3)/3 * Dz
@@ -61,6 +64,9 @@ def rot_mat(atom_list, p):
 
 
 def mpr(p):
+    """rotation matrix for the positive chirality
+       Input:
+           p: list of parameters [J1, J2, Dy, Dz, H]"""
     # positive chirality
     al = [-1 / 3 * np.pi, np.pi, 1 / 3 * np.pi]  # angle with respect to the x-axis
     # negative chirality
@@ -70,7 +76,10 @@ def mpr(p):
 
 
 def spin_interactions(p):
-    # generate J exchange interactions
+    """Generate spin interactions
+       Input:
+           p: list of parameters [J1, J2, Dy, Dz, H]""" 
+    # Eexchange interactions J's
     J1 = p[0]
     J2 = p[1]
     Dy = p[2]
@@ -118,7 +127,10 @@ def spin_interactions(p):
 
 
 def Hamiltonian(Sxyz, pr):
-    """Define the spin Hamiltonian for your system"""
+    """Define the spin Hamiltonian for your system
+       Inputs:
+           Sxyz: list of spin operators
+           pr: list of parameters [J1, J2, Dy, Dz, H]"""
     Jex, DM = spin_interactions(pr)
     HM = 0
     gamma = 2.0
