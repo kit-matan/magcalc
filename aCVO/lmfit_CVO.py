@@ -7,8 +7,6 @@ Created on Mon Aug 20 15:11:17 2018
 
 fit the spin-wave data of alpha-Cu2V2O7
 """
-import sys
-sys.path.append('../')
 import numpy as np
 import magcalc as mc
 from numpy import loadtxt

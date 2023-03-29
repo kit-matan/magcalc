@@ -6,8 +6,6 @@ Created on Mon Aug 13 01:18:18 2018
 
 @author: Kit Matan
 """
-import sys
-sys.path.append('../')
 import numpy as np
 from timeit import default_timer
 import matplotlib.pyplot as plt

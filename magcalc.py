@@ -433,16 +433,16 @@ def calc_Sqw(Sp, q, p, nspins, file, rd_or_wr):
         print('Generating the matrix ...')
         HMat, Ud = gen_HM(k, S, params)  # this function takes a very long time!!!
         # write Hamiltonian to a file 
-        with open(file + '_HM.pck', 'wb') as outHM:
+        with open('pckFiles/' + file + '_HM.pck', 'wb') as outHM:
             outHM.write(pickle.dumps(HMat))
-        with open(file + '_Ud.pck', 'wb') as outUd:
+        with open('pckFiles/' + file + '_Ud.pck', 'wb') as outUd:
             outUd.write(pickle.dumps(Ud))
     elif rd_or_wr == 'r':
         # read Hamiltonian from a file
         print('Reading the matrix from a file ...')
-        with open(file + '_HM.pck', 'rb') as inHM:
+        with open('pckFiles/' + file + '_HM.pck', 'rb') as inHM:
             HMat = pickle.loads(inHM.read())
-        with open(file + '_Ud.pck', 'rb') as inUd:
+        with open('pckFiles/' + file + '_Ud.pck', 'rb') as inUd:
             Ud = pickle.loads(inUd.read())
     else:
         print('Does not recognize the input ' + rd_or_wr + '.')
@@ -521,14 +521,14 @@ def calc_disp(Sp, q, p, nspins, file, rd_or_wr):
         print('Generating the matrix ...')
         HMat, Ud = gen_HM(k, S, params)
         # write Hamiltonian to a file 
-        with open(file + '_HM.pck', 'wb') as outHM:
+        with open('pckFiles/' + file + '_HM.pck', 'wb') as outHM:
             outHM.write(pickle.dumps(HMat))
-        with open(file + '_Ud.pck', 'wb') as outUd:
+        with open('pckFiles/' + file + '_Ud.pck', 'wb') as outUd:
             outUd.write(pickle.dumps(Ud))
     elif rd_or_wr == 'r':
         # read Hamiltonian from a file
         print('Reading the matrix from a file ...')
-        with open(file + '_HM.pck', 'rb') as inHM:
+        with open('pckFiles/' + file + '_HM.pck', 'rb') as inHM:
             HMat = pickle.loads(inHM.read())
     else:
         print('Wrong input!')

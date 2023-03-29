@@ -6,8 +6,6 @@ Created on Mon Aug 13 01:22:57 2018
 
 @author: Kit Matan
 """
-import sys
-sys.path.append('../')
 import numpy as np
 from timeit import default_timer
 import magcalc as mc

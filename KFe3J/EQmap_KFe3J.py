@@ -8,8 +8,6 @@ Created on Mon Aug 13 01:22:57 2018
 
 Create an intensity contour map of Q and energy for spin-waves in KFe3(OH)6(SO4)2
 """
-import sys
-sys.path.append('../')
 import numpy as np
 from timeit import default_timer
 import magcalc as mc
