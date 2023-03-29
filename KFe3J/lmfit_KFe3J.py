@@ -11,7 +11,7 @@ fit the spin-wave data of KFe3J using lmfit package
 The data and results are from PRL 96, 247201 (2006).
 """
 import sys
-sys.path.append('/Users/kmatan/Library/CloudStorage/OneDrive-MahidolUniversity/research/magcalc/magcalc')
+sys.path.append('../')
 import numpy as np
 import magcalc as mc
 from numpy import loadtxt
