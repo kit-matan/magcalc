@@ -30,5 +30,5 @@ and then you can run, for example,
 $ python3 KFe3J/disp_KFe3J.py
 ```
 ### Issues:
-  - The code uses SymPy for symbolic manipulation and it can be very slow.  For example, it takes about 1 hour to generate a matrix for **&alpha;-Cu<sub>2</sub>V<sub>2</sub>O<sub>7</sub>** with 16 spins in the magnetic unit cell.
+  - The code uses SymPy for symbolic manipulation and it can be very slow for a large system.  For example, it takes about 1 hour to generate a matrix for **&alpha;-Cu<sub>2</sub>V<sub>2</sub>O<sub>7</sub>** with 16 spins in the magnetic unit cell.
   - One has to re-edit **spin_model.py** for a different system and it is not straightforward to work with it.
