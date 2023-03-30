@@ -42,7 +42,7 @@ def sw_CVO(x, J1, J2, J3, G1, Dx, H):
     En_k = mc.calc_disp(S, k, p, Nspin, 'CVO', 'r')
     En = []
     for i in range(len(x[:, 0])):
-        En1 = En_k[i][np.int(x[i, 1]-1)]
+        En1 = En_k[i][int(x[i, 1]-1)]
         En.append(En1)
     # print(np.abs(En-x[:, 3]))
     return En
@@ -50,7 +50,7 @@ def sw_CVO(x, J1, J2, J3, G1, Dx, H):
 
 if __name__ == "__main__":
     st = default_timer()
-    data = loadtxt('../data/sw_aCVO.txt', comments="#", delimiter=',', unpack=False, dtype=float)
+    data = loadtxt('data/sw_aCVO.txt', comments="#", delimiter=',', unpack=False, dtype=float)
     p = [2.65522, 2.97384, 5.39009, 0.293822, 2.86330, 0]
     x = np.zeros((len(data[:, 0]), 4))
     x[:, 0] = data[:, 0]
