@@ -15,7 +15,7 @@ Calculate spin-wave excitations based on the linear spin-wave theory.  The progr
   - **EQmap_...py**: calcualte and plot the intensity map as a function of energy and momentum
   - **HKmap_...py**: calcualte and plot the intensity map as a function of momenta
   - **lmfit_...py**: fit the dipersion
-  - **spin_model.py**: contains the information about the spin model used
+  - **spin_model.py**: contain the information about the spin model used
 to calculate spin-waves by **magcalc.py**
   - **data** (folder): contain the neutron scattering data for KFe<sub>3</sub>(OH)<sub>6</sub>(SO<sub>4</sub>)<sub>2</sub> and &alpha;-Cu<sub>2</sub>V<sub>2</sub>O<sub>7</sub>
   - **pckFiles** (folder): contain auxillary files used to stored matrices and calculated intensity
@@ -30,5 +30,6 @@ and then you can run, for example,
 $ python3 KFe3J/disp_KFe3J.py
 ```
 ### Issues:
-  - The code uses SymPy for symbolic manipulation and it can be very slow for a large system.  For example, it takes about 1 hour to generate a matrix for **&alpha;-Cu<sub>2</sub>V<sub>2</sub>O<sub>7</sub>** with 16 spins in a magnetic unit cell.
+  - The code uses SymPy for symbolic manipulation and it can be very slow for a large system.  For example, it takes about 1 hour (on *iMac 5K 27-inch 2020 3.6GHz 10-Core Intel Core i9 with 32GB RAM*) to generate a matrix for **&alpha;-Cu<sub>2</sub>V<sub>2</sub>O<sub>7</sub>** with 16 spins in a magnetic unit cell.
   - One has to re-edit **spin_model.py** for a different system and it is not straightforward to work with it.
+  - **Calculations can be very slow for a large system.**
