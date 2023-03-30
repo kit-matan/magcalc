@@ -19,7 +19,7 @@ if __name__ == '__main__':
     # p = [2.49, 1.12 * 2.49, 2.03 * 2.49, 0.28, 0, 0, 2.67, 0, 0, 0, 0, 0, 0, 0, -3.0]
     p = [2.49, 1.12 * 2.49, 2.03 * 2.49, 0.28, 0, 0, 2.67, 0, 0, 0, 0, 0, 0, 0, 0.0]
     Nspin = 16  # number of spins in a unit cell
-    shift = 0
+    shift = 1e-5
 
     la = 20.645
     lb = 8.383
@@ -32,17 +32,13 @@ if __name__ == '__main__':
     qmax = 5
     qstep = 0.02
 
-    """
     qsy = np.arange(qmin + shift, qmax + shift + qstep, qstep)
     q = []
     for i in range(len(qsy)):
-        qx = 0
-        qy = qsy[i] * (2 * np.pi / lb)
-        qz = 0
-        q1 = np.array([qx, qy, qz])
+        q1 = np.array([0, qsy[i] * (2 * np.pi / lb), 0])
         q.append(q1)
-    """
 
+    """
     qsy = np.arange(qmin + shift, qmax + shift + qstep, qstep)
     q = []
     for i in range(len(qsy)):
@@ -51,6 +47,7 @@ if __name__ == '__main__':
         qz = 0.0 * (2 * np.pi / lc)
         q1 = np.array([qx, qy, qz])
         q.append(q1)
+    """
 
     qout_ky, En_ky, Sqwout_ky = mc.calc_Sqw(S, q, p, Nspin, 'CVO', 'r')
 
