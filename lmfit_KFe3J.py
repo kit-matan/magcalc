@@ -1,3 +1,4 @@
+# %%
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
@@ -5,7 +6,9 @@ Created on Mon Aug 20 15:11:17 2018
 
 @author: Kit Matan
 
-fit the spin-wave data of KFe3J using lmfit
+fit the spin-wave data of KFe3J using lmfit package 
+
+The data and results are from PRL 96, 247201 (2006).
 """
 
 import numpy as np
@@ -18,6 +21,14 @@ from lmfit import Model
 
 
 def sw_KFe3J(x, J1, J2, Dy, Dz, H):
+    """Calculate the spin-wave dispersion for KFe3(OH)6(SO4)2
+        Inputs:
+            x: list of k-vectors
+            J1: exchange constant between nearest-neighbor
+            J2: exchange constant between second nearest-neighbor
+            Dy: DM interaction constant along y
+            Dz: DM interaction constant along z
+            H: magnetic field along z"""
     Nspin = 3
     S = 5.0/2.0
     p = np.array([J1, J2, Dy, Dz, H])
@@ -39,9 +50,29 @@ def sw_KFe3J(x, J1, J2, Dy, Dz, H):
     En_k = mc.calc_disp(S, k, p, Nspin, 'KFe3J', 'r')
     En = []
     for i in range(len(x[:, 0])):
-        Eni = En_k[i][np.int(x[i, 1])]
+        Eni = En_k[i][int(x[i, 1])]
         En.append(Eni)
     return En
+
+
+def fit_sw(p, x, y, dy):
+    """Fit the spin-wave data using lmfit
+        Inputs:
+            p: initial parameters
+            x: list of k-vectors
+            y: list of energy
+            dy: list of error of energy
+        Outputs:
+            pfit: fitted parameters
+            result: fitting result"""
+    sw_model = Model(sw_KFe3J)
+    params = sw_model.make_params(J1=p[0], J2=p[1], Dy=p[2], Dz=p[3], H=p[4])
+    params.add('H', value=0.0, vary=False)
+    result = sw_model.fit(y, params, method='leastsq', x=x, weights=1./dy)
+    pfit = [result.params['J1'].value, result.params['J2'].value, 
+            result.params['Dy'].value, result.params['Dz'].value, 
+            result.params['H'].value]
+    return pfit, result
 
 
 if __name__ == "__main__":
@@ -57,33 +88,19 @@ if __name__ == "__main__":
     x[:, 1] = data[:, 4]
     x[:, 2] = data[:, 5]
 
-    sw_model = Model(sw_KFe3J)
-    params = sw_model.make_params(J1=p[0], J2=p[1], Dy=p[2], Dz=p[3], H=p[4])
-    params.add('H', value=0.0, vary=False)
-    result = sw_model.fit(y, params, method='leastsq', x=x, weights=1./dy)
+    pfit, result = fit_sw(p, x, y, dy)
 
-    print(result.fit_report())
-    
-    pfit = [result.params['J1'].value, result.params['J2'].value, 
-            result.params['Dy'].value, result.params['Dz'].value, 
-            result.params['H'].value]
-    
+    # Plot the fitting result with the data
     S = 5.0 / 2.0
     nspins = 3
     qsx = np.arange(0, 2 * np.pi / np.sqrt(3) + 0.05, 0.05)
     qsy = np.arange(0, 2 * np.pi + 0.05, 0.05)
     q = []
     for i in range(len(qsx)):
-        qx = qsx[i]
-        qy = 0
-        qz = 0
-        q1 = np.array([qx, qy, qz])
+        q1 = np.array([qsx[i], 0, 0])
         q.append(q1)
     for i in range(len(qsy)):
-        qx = 0
-        qy = qsy[i]
-        qz = 0
-        q1 = np.array([qx, qy, qz])
+        q1 = np.array([0, qsy[i], 0])
         q.append(q1)
     En = mc.calc_disp(S, q, pfit, nspins, 'KFe3J', 'r')
 
@@ -94,7 +111,7 @@ if __name__ == "__main__":
     Eky2 = [En[len(qsx) + i][1] for i in range(len(qsy))]
     Eky3 = [En[len(qsx) + i][2] for i in range(len(qsy))]
 
-    # plot the spin-wave dispersion
+    # plot the spin-wave dispersion from the fitting result
     qsyn = 2 * np.pi + 2 * np.pi / np.sqrt(3) - qsy
     plt.plot(qsx, Ekx1, 'r-')
     plt.plot(qsx, Ekx2, 'g-')
@@ -133,3 +150,5 @@ if __name__ == "__main__":
     et = default_timer()
     print('Total run-time: ', np.round((et-st) / 60, 2), ' min.')
     plt.show()
+
+# %%

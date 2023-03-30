@@ -24,8 +24,9 @@ from multiprocessing import Pool
 
 def gen_HM(k, S, params):
     """generate the spin Hamiltonian
-    inputs: k is a vector kx,ky,kz, S is the spin value, and p contains
-    the spin Hamiltonian parameters.
+    inputs: k is a vector kx,ky,kz 
+            S is the spin value
+            p contains the spin Hamiltonian parameters.
     output: Hamiltonian matrix and Ud that will be used to calculate scattering intensity
     The Hamiltonian and spin structure are given in a separate file called 'spin_model.py'"""
     apos = sm.atom_pos()
@@ -197,7 +198,14 @@ def gram_schmidt(x):
 
 
 def KKdMatrix(Sp, Hkp, Hkm, Ud, q, nspins):
-    """calculate K and Kd matrices"""
+    """Calculate K and Kd matrices
+        Inputs:
+            Sp: spin operators
+            Hkp: Hamiltonian for positive q
+            Hkm: Hamiltonian for negative q
+            Ud: spin rotation operators
+            q: momentum transfer
+            nspins: number of spins"""
     dEdeg = 10e-12  # degeneracy threshold
     G = np.bmat([[np.eye(nspins), np.zeros((nspins, nspins))],
                  [np.zeros((nspins, nspins)), -np.eye(nspins)]])
@@ -359,7 +367,14 @@ def KKdMatrix(Sp, Hkp, Hkm, Ud, q, nspins):
 
 
 def process_calc_Sqw(HMat, Ud, k, q, nspins, Sp):
-    """process to calculate scattering intensity that will be called by Pool to run using multiprocessing"""
+    """Process to calculate scattering intensity that will be called by Pool to run using multiprocessing
+        Inputs:
+            HMat: Hamiltonian matrix
+            Ud: unitary matrix
+            k: wave vector
+            q: momentum transfer
+            nspins: number of spins
+            Sp: spin quantum number"""
     Sqwout0 = np.zeros(nspins, dtype=complex)
     Hkp = HMat.subs({k[0]: q[0], k[1]: q[1], k[2]: q[2]}, simultaneous=True).evalf()
     Hkp = np.mat(Hkp).astype(np.complex_)
@@ -399,7 +414,14 @@ def process_calc_Sqw(HMat, Ud, k, q, nspins, Sp):
 
 
 def calc_Sqw(Sp, q, p, nspins, file, rd_or_wr):
-    """calculate the scattering intensity; Sqw with the geometric factor"""
+    """calculate the scattering intensity; Sqw with the geometric factor
+        Inputs:
+            Sp: spin quantum number
+            q: momentum transfer
+            p: parameters
+            nspins: number of spins
+            file: file name
+            rd_or_wr: read or write the Hamiltonian matrix to a file"""
     print('Calculating scattering intensity ...')
     kx, ky, kz = sp.symbols('kx ky kz', real=True)
     k = [kx, ky, kz]
@@ -461,7 +483,12 @@ def calc_Sqw(Sp, q, p, nspins, file, rd_or_wr):
 
 
 def process_calc_disp(HMat, k, q, nspins):
-    """process to calculate dispersion relation that will be called by Pool to run using multi-processing"""
+    """Process to calculate dispersion relation that will be called by Pool to run using multi-processing
+        Inputs:
+            HMat: Hamiltonian matrix
+            k: momentum
+            q: momentum transfer
+            nspins: number of spins"""
     HMat_k = HMat.subs({k[0]: q[0], k[1]: q[1], k[2]: q[2]}, simultaneous=True).evalf()
     HMat_k = np.mat(HMat_k).astype(np.complex_)
     eigval = la.eigvals(HMat_k)
@@ -476,7 +503,14 @@ def process_calc_disp(HMat, k, q, nspins):
 
 
 def calc_disp(Sp, q, p, nspins, file, rd_or_wr):
-    """calculate dispersion relation"""
+    """Calculate dispersion relation
+        Inputs:
+            Sp: spin quantum number
+            q: momentum transfer
+            p: parameters
+            nspins: number of spins
+            file: file name
+            rd_or_wr: read or write the Hamiltonian matrix to a file"""
     kx, ky, kz = sp.symbols('kx ky kz', real=True)
     k = [kx, ky, kz]
     S = sp.Symbol('S', real=True)

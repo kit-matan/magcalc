@@ -1,3 +1,4 @@
+# %%
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
@@ -8,30 +9,25 @@ Created on Mon Aug 13 01:22:57 2018
 Create an intensity contour map of Q and energy for spin-waves in KFe3(OH)6(SO4)2
 """
 import numpy as np
-import timeit
+from timeit import default_timer
 import magcalc as mc
 import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
 import pickle
 
-if __name__ == '__main__':
-    # spin-wave intensity S(Q,\omega)
-    st = timeit.default_timer()
-    # jarosite
-    # S = 5.0 / 2.0  # spin value
-    # p = [3.23, 0.11, 0.218, -0.195, 0]   # spin Hamiltonian parameter [J1, J2, Dy, Dz, H]
-    # p = [3.23, 0.11, 0.218, -0.195, 0]   # spin Hamiltonian parameter [J1, J2, Dy, Dz, H]
-
-    newcalc = 1
-
-    # CCSF
-    S = 1.0 / 2.0
-    p = [12.8, -1.23, 0.063 * 12.8, -0.25 * 12.8, 0]
-
-    nspins = 3  # number of spins in a unit cell
-
-    qsx = np.arange(-np.pi / np.sqrt(3), 2 * np.pi / np.sqrt(3) + 0.02, 0.02)
-    qsy = np.arange(-np.pi, 2 * np.pi + 0.02, 0.02)
+def plot_map(p, S, nspins, wr, newcalc):
+    """Spin-wave intensity map S(Q,\omega)
+        Inputs:
+            p: list of parameters
+            S: spin value
+            nspins: number of spins in a unit cell
+            wr: 'w' for write to file, 'r' for read from file
+            newcalc: 1 for new calculation, 0 for reading from file"""
+    intv = 0.05
+    # qsx = np.arange(0 - intv / 2 , 2 * np.pi / np.sqrt(3) + intv / 2, intv)
+    # qsy = np.arange(0 - intv / 2, 2 * np.pi + intv / 2 ,intv)
+    qsx = np.arange(-np.pi / np.sqrt(3) - intv / 2, 2 * np.pi / np.sqrt(3) + intv / 2, intv)
+    qsy = np.arange(-np.pi - intv / 2, 2 * np.pi + intv / 2, intv)
     q = []
     for i in range(len(qsx)):
         q.append(np.array([qsx[i], 0, 0]))
@@ -39,7 +35,7 @@ if __name__ == '__main__':
         q.append(np.array([0, qsy[i], 0]))
 
     if newcalc == 1:
-        qout, En, Sqwout = mc.calc_Sqw(S, q, p, nspins, 'KFe3J', 'r')
+        qout, En, Sqwout = mc.calc_Sqw(S, q, p, nspins, 'KFe3J', wr)
         with open('pckFiles/KFe3J_EQmap_En.pck', 'wb') as outEn:
             outEn.write(pickle.dumps(En))
         with open('pckFiles/KFe3J_EQmap_Sqw.pck', 'wb') as outSqwout:
@@ -83,6 +79,7 @@ if __name__ == '__main__':
     X, Y = np.meshgrid(qs, Ex)
     # intMat_ky = np.flip(intMat_ky, 1)
     intMat = np.concatenate([intMat_kx, intMat_ky], axis=-1)
+    # plt.pcolor(X, Y, intMat)
     plt.pcolormesh(X, Y, intMat, norm=LogNorm(vmin=intMat.min(), vmax=intMat.max()), cmap='PuBu_r', shading='auto')
     plt.xlim([-np.pi / np.sqrt(3), 2 * np.pi / np.sqrt(3) + 3 * np.pi])
     plt.ylim([0, 20])
@@ -96,6 +93,19 @@ if __name__ == '__main__':
     plt.title('Spin-waves for KFe$_3$(OH)$_6$(SO$_4$)$_2$')
     plt.colorbar()
     plt.show()
-    et = timeit.default_timer()
-    print('Total run-time: ', np.round((et-st) / 60, 2), ' min.')
 
+
+if __name__ == "__main__":
+    st_main = default_timer()
+    # KFe3Jarosite
+    S = 5.0 / 2.0  # spin value
+    # CCSF
+    # S = 1.0 / 2.0
+    # p = [12.8, -1.23, 0.063 * 12.8, -0.25 * 12.8, 0]
+    nspins = 3  # number of spins in a unit cell
+    p = [3.23, 0.11, 0.218, -0.195, 0]
+    plot_map(p, S, nspins, 'r', 1)
+    et_main = default_timer()
+    print('Total run-time: ', np.round((et_main-st_main) / 60, 2), ' min.')
+
+# %%
