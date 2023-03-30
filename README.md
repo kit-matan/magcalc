@@ -3,10 +3,10 @@ Calculate spin-wave excitations based on the linear spin-wave theory.  The progr
 
 ### Requirement:
   - **Python3**
-  - SymPy
-  - NumPy
-  - Matplotlib
-  - lmfit
+    - SymPy
+    - NumPy
+    - Matplotlib
+    - lmfit
 
 
 ### File description:
@@ -32,5 +32,6 @@ $ python3 KFe3J/disp_KFe3J.py
 You have to run **disp_---.py** first to generate and store a matrix to a .pck file.
 ### Issues:
   - The code uses SymPy for symbolic manipulation and it can be very slow for a large system.  For example, it takes about 1 hour (on *iMac 5K 27-inch 2020 3.6GHz 10-Core Intel Core i9 with 32GB RAM*) to generate a matrix for **&alpha;-Cu<sub>2</sub>V<sub>2</sub>O<sub>7</sub>** with 16 spins in a magnetic unit cell.
-  - One has to re-edit **spin_model.py** for a different system and it is not straightforward to work with it.
   - **Calculations can be very slow for a large system** (even with *Multiprocessing* for diagonalization of a matrix).
+  - One has to re-edit **spin_model.py** for a different system and it is not straightforward to work with it.
+  - It still requires a lot of editing to work with other systems.
