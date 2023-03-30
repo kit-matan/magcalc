@@ -75,16 +75,16 @@ def plot_HKmap(p, newcalc, E_intv):
     # plt.pcolormesh(X, Y, intMat, norm=LogNorm(vmin=intMat.min(), vmax=intMat.max()), cmap='PuBu_r')
     plt.xlim([min(kx), max(kx)])
     plt.ylim([min(ky), max(ky)])
-    # plt.title('Spin-waves for Cs2Cu3SnF12')
-    # plt.colorbar()
+    plt.title('Spin-waves for alpha-Cu$_2$V$_2$O$_7$')
+    plt.colorbar()
     et=default_timer()
     print('Total run-time: ', np.round((et-st)/60, 2), ' mins.')
-    plt.savefig('figures/CVO_HKmap.eps', format='eps', dpi=1000)
+    # plt.savefig('figures/CVO_HKmap.eps', format='eps', dpi=1000)
     plt.show()
 
 
 if __name__ == '__main__':
     print("Start: ", time.asctime(time.localtime()))
     p = [2.49, 1.12 * 2.49, 2.03 * 2.49, 0.28, 0, 0, 2.67, 0, 0, 0, 0, 0, 0, 0, 0.0]
-    plot_HKmap(p, 1, [6, 7])
+    plot_HKmap(p, 0, [6, 7])
     print("End: ", time.asctime(time.localtime()))
