@@ -1,4 +1,4 @@
-# magcalc
+# pyMagCalc
 Calculate spin-wave excitations based on the linear spin-wave theory.  The program is written in Python using SymPy.  It was used to calcualte spin-wave exctaitons in the kagome lattice antiferromagnet **KFe<sub>3</sub>(OH)<sub>6</sub>(SO<sub>4</sub>)<sub>2</sub>**, the non-reciprocal magnons in **&alpha;-Cu<sub>2</sub>V<sub>2</sub>O<sub>7</sub>**, and spin-waves excitations in **Zn-doped Cu<sub>2</sub>V<sub>2</sub>O<sub>7</sub>**, where the non-reciprocal magnons are absent.
 
 ### Requirement:
