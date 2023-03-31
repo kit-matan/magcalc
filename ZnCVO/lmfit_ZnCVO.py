@@ -230,8 +230,6 @@ if __name__ == "__main__":
     axh.plot(qsx, Ekx7, 'c-.')
     axh.plot(qsx, Ekx8, 'k--')
     axh.errorbar(kx, Enx, yerr=dEnx, fmt='ko')
-    # axh.ylabel('$\hbar\omega$ (meV)', fontsize=12)
-    # axh.xlabel('(H,2,0)', fontsize=12)
     # along K
     axk.plot(qsy, Eky1, 'r-')
     axk.plot(qsy, Eky2, 'g-')
@@ -242,8 +240,6 @@ if __name__ == "__main__":
     axk.plot(qsy, Eky7, 'c-.')
     axk.plot(qsy, Eky8, 'k--')
     axk.errorbar(ky, Eny, yerr=dEny, fmt='ko')
-    # axk.ylabel('$\hbar\omega$ (meV)', fontsize=12)
-    # axk.xlabel('(0,K,0)', fontsize=12)
     plt.title('Spin-waves Zn$_{0.15}$Cu$_{1.85}$V$_2$O$_7$')
 
     et = default_timer()

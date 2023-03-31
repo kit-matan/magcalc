@@ -102,8 +102,6 @@ def plot_dispersion(p):
     axh.plot(qsx, Ekx6, 'y-.')
     axh.plot(qsx, Ekx7, 'c-.')
     axh.plot(qsx, Ekx8, 'k--')
-    # axh.ylabel('$\hbar\omega$ (meV)', fontsize=12)
-    # axh.xlabel('(H,2,0)', fontsize=12)
     # along the [010] direction
     axk.plot(qsy, Eky1, 'r-')
     axk.plot(qsy, Eky2, 'g-')
@@ -113,8 +111,6 @@ def plot_dispersion(p):
     axk.plot(qsy, Eky6, 'y-.')
     axk.plot(qsy, Eky7, 'c-.')
     axk.plot(qsy, Eky8, 'k--')
-    # axk.ylabel('$\hbar\omega$ (meV)', fontsize=12)
-    # axk.xlabel('(0,K,0)', fontsize=12)
     # plt.title('Spin-waves Zn$_{0.15}$Cu$_{1.85}$V$_2$O$_7$')
     plt.show()
     
