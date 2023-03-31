@@ -5,6 +5,7 @@ Calculate spin-wave excitations based on the linear spin-wave theory.  The progr
   - **Python3**
     - SymPy
     - NumPy
+    - SciPy
     - Matplotlib
     - lmfit
 

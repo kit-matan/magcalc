@@ -1,9 +1,7 @@
 /.DS_Store
-/.idea
-/KFe3J_HM.pck
-/KFe3J_Ud.pck
 /__pycache__
 /.vscode
+.idea
 pckFiles/CVO_HKmap_En.pck
 pckFiles/CVO_HKmap_Sqw.pck
 pckFiles/CVO_HM.pck
@@ -22,5 +20,3 @@ pckFiles/ZnCVO_HM.pck
 pckFiles/ZnCVO_Ud.pck
 KFe3J/.DS_Store
 KFe3J/__pycache__
-
-
