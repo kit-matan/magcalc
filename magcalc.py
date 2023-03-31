@@ -5,8 +5,8 @@ Created on Fri Aug  3 13:56:34 2018
 
 @author: Kit Matan and Pharit Piyawongwatthana
 
-Python code to calculate spin-wave dispersion and scattering intensity
-Translated from Mathematica and Octave codes written by Taku J Sato
+Python code to calculate spin-wave dispersion and scattering intensity.
+Translated from Mathematica and Octave codes written by Taku J Sato.
 """
 # this file contains spin model; see example
 # edit spin_model.py
