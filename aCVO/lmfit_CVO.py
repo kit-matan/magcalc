@@ -6,6 +6,7 @@ Created on Mon Aug 20 15:11:17 2018
 @author: Kit Matan
 
 fit the spin-wave data of alpha-Cu2V2O7
+The data and results are from PRL 119, 047201 (2017).
 """
 import numpy as np
 import magcalc as mc
@@ -117,8 +118,6 @@ if __name__ == "__main__":
             result.params['J3'].value, result.params['G1'].value, 0, 0,
             result.params['Dx'].value, 0, 0, 0, 0, 0, 0, 0, result.params['H'].value]
 
-    # pfit = [2.65522, 2.97384, 5.39009, 0.293822, 0, 0, 2.86330, 0, 0, 0, 0, 0, 0, 0, 0]
-    
     S = 1.0 / 2.0
     Nspin = 16
     qsy = np.arange(1, 3 + 0.02, 0.02)
