@@ -18,7 +18,7 @@ Calculate spin-wave excitations based on the linear spin-wave theory.  The progr
   - **lmfit_---.py**: fit the dipersion
   - **spin_model.py**: contain the information about the spin model used
 to calculate spin-waves by **magcalc.py**
-  - **data** (folder): contain the neutron scattering data for KFe<sub>3</sub>(OH)<sub>6</sub>(SO<sub>4</sub>)<sub>2</sub> and &alpha;-Cu<sub>2</sub>V<sub>2</sub>O<sub>7</sub>
+  - **data** (folder): contain the neutron scattering data for KFe<sub>3</sub>(OH)<sub>6</sub>(SO<sub>4</sub>)<sub>2</sub>, &alpha;-Cu<sub>2</sub>V<sub>2</sub>O<sub>7</sub>, and Zn-doped Cu<sub>2</sub>V<sub>2</sub>O<sub>7</sub>
   - **pckFiles** (folder): contain auxillary files used to stored matrices and calculated intensity
 
 ### How to run the program:
