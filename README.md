@@ -36,4 +36,4 @@ You have to run **disp_---.py** first to generate and store a matrix to a .pck f
 ### Issues:
   - The code uses SymPy for symbolic manipulation and it can be very slow for a large system.  For example, it takes about 1 hour (on *iMac 5K 27-inch 2020 3.6GHz 10-Core Intel Core i9 with 32GB RAM*) to generate a matrix for **&alpha;-Cu<sub>2</sub>V<sub>2</sub>O<sub>7</sub>** with 16 spins in a magnetic unit cell.
   - **Calculations can be very slow for a large matrix** even with *multiprocessing*.
-  - One has to re-edit **spin_model.py** for a different system and it is not straightforward to work with it.
+  - One has to re-edit **spin_model.py** for a different system. 
