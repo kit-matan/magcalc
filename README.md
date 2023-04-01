@@ -1,5 +1,5 @@
 # magcalc
-Calculate spin-wave excitations based on the linear spin-wave theory.  The program is written in Python using SymPy.  It was used to calcualte spin-wave exctaitons for the kagome lattice antiferromagnet **KFe<sub>3</sub>(OH)<sub>6</sub>(SO<sub>4</sub>)<sub>2</sub>** and for the non-reciprocal magnons in **&alpha;-Cu<sub>2</sub>V<sub>2</sub>O<sub>7</sub>**.
+Calculate spin-wave excitations based on the linear spin-wave theory.  The program is written in Python using SymPy.  It was used to calcualte spin-wave exctaitons in the kagome lattice antiferromagnet **KFe<sub>3</sub>(OH)<sub>6</sub>(SO<sub>4</sub>)<sub>2</sub>**, the non-reciprocal magnons in **&alpha;-Cu<sub>2</sub>V<sub>2</sub>O<sub>7</sub>**, and spin-waves excitations in **Zn-doped Cu<sub>2</sub>V<sub>2</sub>O<sub>7</sub>**, where the non-reciprocal magnons are absent.
 
 ### Requirement:
   - **Python3**
@@ -32,5 +32,5 @@ $ python3 KFe3J/disp_KFe3J.py
 You have to run **disp_---.py** first to generate and store a matrix to a .pck file.
 ### Issues:
   - The code uses SymPy for symbolic manipulation and it can be very slow for a large system.  For example, it takes about 1 hour (on *iMac 5K 27-inch 2020 3.6GHz 10-Core Intel Core i9 with 32GB RAM*) to generate a matrix for **&alpha;-Cu<sub>2</sub>V<sub>2</sub>O<sub>7</sub>** with 16 spins in a magnetic unit cell.
-  - **Calculations can be very slow for a large system** (even with *Multiprocessing* for diagonalization of a matrix).
-  - One has to re-edit **spin_model.py** for a different system and it is not straightforward to work with it. It still requires a lot of editing to work with other systems.
+  - **Calculations can be very slow for a large matrix** even with *multiprocessing*.
+  - One has to re-edit **spin_model.py** for a different system and it is not straightforward to work with it.
