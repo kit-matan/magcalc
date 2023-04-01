@@ -22,13 +22,13 @@ to calculate spin-waves by **magcalc.py**
 
 
 ### How to run the program:
-In the terminal, set up the following path
+In the terminal,
 ```
 $ export PYTHONPATH=<Path to magcalc.py>
 $ cd <Path to magcalc.py>
 $ mkdir pckFiles
 ```
-and then you can run, for example,
+and then run, for example,
 ```
 $ python3 KFe3J/disp_KFe3J.py
 ```
