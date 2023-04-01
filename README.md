@@ -25,6 +25,8 @@ to calculate spin-waves by **magcalc.py**
 In the terminal, set up the following path
 ```
 $ export PYTHONPATH=<Path to magcalc.py>
+$ cd <Path to magcalc.py>
+$ mkdir pckFiles
 ```
 and then you can run, for example,
 ```
