@@ -3,7 +3,7 @@
 """
 Created on Tue Aug 14 01:05:39 2018
 
-@author: Ganatee GKit Matan
+@author: Ganatee Gitgeatpong and Kit Matan
 
 this file contains the information about the spin structure that will be used
 to calculate spin-waves by MagCal.py
