@@ -14,7 +14,7 @@ import magcalc as mc
 import math
 import pandas as pd
 
-def plot_dispersion(p):
+def plot_dispersion(p, wr):
     '''Plot the spin-wave dispersion of ZnCVO
         Input:
         p: a list of parameters'''
@@ -38,7 +38,7 @@ def plot_dispersion(p):
         qz1 = qsx[i] * cstr * np.sin(math.radians(beta-90))
         q1 = [qx1, qy1, qz1]
         qH.append(q1)
-    En_kx = mc.calc_disp(S, qH, p, Nspin, 'ZnCVO', 'r')
+    En_kx = mc.calc_disp(S, qH, p, Nspin, 'ZnCVO', wr)
     # Calculate the spin-wave dispersion along the [010] direction
     for i in range(len(qsy)):
         q2 = [0, qsy[i] * bstr, 0]
@@ -120,6 +120,6 @@ if __name__ == "__main__":
     st = default_timer()
     # p = [J1, J2, J3, J4, J5, J6, J7, G, D, H]
     p = [8.497751, 0, 0, 0, 5.261605, 1.873546, 0.5095509, 0.00447892, 0]
-    plot_dispersion(p)
+    plot_dispersion(p, 'w')
     et = default_timer()
     print('Total run-time: ', np.round((et-st)/60, 2), ' min.')
