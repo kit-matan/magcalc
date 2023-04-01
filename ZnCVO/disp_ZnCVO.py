@@ -115,7 +115,7 @@ def plot_dispersion(p):
     axk.plot(qsy, Eky8, 'k--')
     # axk.ylabel('$\hbar\omega$ (meV)', fontsize=12)
     # axk.xlabel('(0,K,0)', fontsize=12)
-    plt.title('Spin-waves Zn$_{0.15}$Cu$_{1.85}$V$_2$O$_7$')
+    # plt.title('Spin-waves Zn$_{0.15}$Cu$_{1.85}$V$_2$O$_7$')
     plt.show()
     
 

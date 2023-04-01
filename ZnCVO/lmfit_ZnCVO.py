@@ -18,7 +18,7 @@ from lmfit import Model
 import math
 
 
-def sw_CVO(x, J1, J2, J3, J4, J5, J6, J7, G, H):
+def sw_ZnCVO(x, J1, J2, J3, J4, J5, J6, J7, G, H):
     astr = 0.87101208
     bstr = 0.78257113
     cstr = 0.66266382
@@ -64,7 +64,7 @@ if __name__ == "__main__":
 
     # fit the data using lmfit
     # fit J_1
-    sw_model = Model(sw_CVO)
+    sw_model = Model(sw_ZnCVO)
     params = sw_model.make_params(J1=p[0], J2=p[1], J3=p[2], J4=p[3], J5=p[4], J6=p[5], J7=p[6], G=p[7], H=p[8])
     params.add('J2', value=p[1], vary=False)
     params.add('J3', value=p[2], vary=False)
@@ -84,7 +84,7 @@ if __name__ == "__main__":
     print(result.fit_report())
 
     # fit J_5
-    sw_model = Model(sw_CVO)
+    sw_model = Model(sw_ZnCVO)
     params = sw_model.make_params(J1=p[0], J2=p[1], J3=p[2], J4=p[3], J5=p[4], J6=p[5], J7=p[6], G=p[7], H=p[8])
     params.add('J1', value=p[0], vary=False)
     params.add('J2', value=p[1], vary=False)
@@ -104,7 +104,7 @@ if __name__ == "__main__":
     print(result.fit_report())
     
     # fit J_6
-    sw_model = Model(sw_CVO)
+    sw_model = Model(sw_ZnCVO)
     params = sw_model.make_params(J1=p[0], J2=p[1], J3=p[2], J4=p[3], J5=p[4], J6=p[5], J7=p[6], G=p[7], H=p[8])
     params.add('J1', value=p[0], vary=False)
     params.add('J2', value=p[1], vary=False)
@@ -124,7 +124,7 @@ if __name__ == "__main__":
     print(result.fit_report())
     
     # fit J_7
-    sw_model = Model(sw_CVO)
+    sw_model = Model(sw_ZnCVO)
     params = sw_model.make_params(J1=p[0], J2=p[1], J3=p[2], J4=p[3], J5=p[4], J6=p[5], J7=p[6], G=p[7], H=p[8])
     params.add('J1', value=p[0], vary=False)
     params.add('J2', value=p[1], vary=False)
@@ -144,7 +144,7 @@ if __name__ == "__main__":
     print(result.fit_report())
     
     # fit G
-    sw_model = Model(sw_CVO)
+    sw_model = Model(sw_ZnCVO)
     params = sw_model.make_params(J1=p[0], J2=p[1], J3=p[2], J4=p[3], J5=p[4], J6=p[5], J7=p[6], G=p[7], H=p[8])
     params.add('J1', value=p[0], vary=False)
     params.add('J2', value=p[1], vary=False)
@@ -230,9 +230,9 @@ if __name__ == "__main__":
     axh.plot(qsx, Ekx7, 'c-.')
     axh.plot(qsx, Ekx8, 'k--')
     axh.errorbar(kx, Enx, yerr=dEnx, fmt='ko')
-    axh.ylabel('$\hbar\omega$ (meV)', fontsize=12)
-    axh.xlabel('(H,2,0)', fontsize=12)
-    #along K
+    # axh.ylabel('$\hbar\omega$ (meV)', fontsize=12)
+    # axh.xlabel('(H,2,0)', fontsize=12)
+    # along K
     axk.plot(qsy, Eky1, 'r-')
     axk.plot(qsy, Eky2, 'g-')
     axk.plot(qsy, Eky3, 'b-')
@@ -242,8 +242,8 @@ if __name__ == "__main__":
     axk.plot(qsy, Eky7, 'c-.')
     axk.plot(qsy, Eky8, 'k--')
     axk.errorbar(ky, Eny, yerr=dEny, fmt='ko')
-    axk.ylabel('$\hbar\omega$ (meV)', fontsize=12)
-    axk.xlabel('(0,K,0)', fontsize=12)
+    # axk.ylabel('$\hbar\omega$ (meV)', fontsize=12)
+    # axk.xlabel('(0,K,0)', fontsize=12)
     plt.title('Spin-waves Zn$_{0.15}$Cu$_{1.85}$V$_2$O$_7$')
 
     et = default_timer()

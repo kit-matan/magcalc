@@ -54,6 +54,7 @@ def plot_Sqw_EKmap(S, p, newcalc, wr):
     plt.pcolormesh(X, Y, intMat_ky, norm=LogNorm(vmin=intMat_ky.min(), vmax=intMat_ky.max()), cmap='PuBu_r')
     plt.xlim([1, 3])
     plt.ylim([0, 13])
+    plt.xlabel('(0,K,0) (r.l.u.)', fontsize=12)
     plt.ylabel('$\hbar\omega$ (meV)', fontsize=12)
     plt.yticks(np.arange(0, 13, 2.0))
     plt.xticks(np.arange(1, 3 + 0.25, 0.25))
