@@ -6,6 +6,7 @@ Created on Mon Aug 13 01:18:18 2018
 @author: Ganatee Gitgeatpong and Kit Matan
 This work is based on the paper PRB 106, 214438 (2022).
 """
+import spin_model as sm
 import numpy as np
 from timeit import default_timer
 import matplotlib.pyplot as plt
@@ -19,7 +20,7 @@ def plot_dispersion(p):
         p: a list of parameters'''
     S = 1 / 2 # spin quantum number
     beta = 110.251999
-    Nspin = 8  # number of spins in a unit cell
+    Nspin = len(sm.atom_pos())  # number of spins in a unit cell
     astr = 0.87101208
     bstr = 0.78257113
     cstr = 0.66266382

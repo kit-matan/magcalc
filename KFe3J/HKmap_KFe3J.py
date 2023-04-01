@@ -6,6 +6,7 @@ Created on Mon Aug 13 01:22:57 2018
 
 @author: Kit Matan
 """
+import spin_model as sm
 import numpy as np
 from timeit import default_timer
 import magcalc as mc
@@ -71,9 +72,9 @@ if __name__ == "__main__":
     # CCSF
     # S = 1.0 / 2.0
     # p = [12.8, -1.23, 0.063 * 12.8, -0.25 * 12.8, 0]
-    nspins = 3  # number of spins in a unit cell
+    nspins = len(sm.atom_pos())  # number of spins in a unit cell
     p = [3.23, 0.11, 0.218, -0.195, 0]
-    plot_hkmap(p, S, nspins, 'r', 0, [6, 8], 0.1)
+    plot_hkmap(p, S, nspins, 'r', 1, [6, 8], 0.1)
     et_main = default_timer()
     print('Total run-time: ', np.round((et_main-st_main) / 60, 2), ' min.')
 

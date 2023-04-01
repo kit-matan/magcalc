@@ -8,6 +8,7 @@ Created on Mon Aug 13 01:18:18 2018
 
 Calculate and plot the spin-wave dispersion for KFe3(OH)6(SO4)2
 """
+import spin_model as sm
 import numpy as np
 from timeit import default_timer
 import matplotlib.pyplot as plt
@@ -68,7 +69,7 @@ if __name__ == "__main__":
     # CCSF
     # S = 1.0 / 2.0
     # p = [12.8, -1.23, 0.063 * 12.8, -0.25 * 12.8, 0]
-    nspins = 3  # number of spins in a unit cell
+    nspins = len(sm.atom_pos())  # number of spins in a unit cell
     p = [3.23, 0.11, 0.218, -0.195, 0]
     plot_disp(p, S, nspins, 'w')
     et_main = default_timer()

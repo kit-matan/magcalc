@@ -6,6 +6,7 @@ Created on Mon Aug 13 01:22:57 2018
 @author: Ganatee Gitgeatpong and Kit Matan
 This work is based on the paper PRB 106, 214438 (2022).
 """
+import spin_model as sm
 import numpy as np
 from timeit import default_timer
 import magcalc as mc
@@ -15,14 +16,13 @@ import math
 import pickle
 
 
-
 def plot_Sqw_EHmap(S, p, newcalc, wr):
     # calculate spin-wave intensity S(Q,\omega)
     astr = 0.87101208
     bstr = 0.78257113
     cstr = 0.66266382
     beta = 110.251999
-    Nspin = 8  # number of spins in a unit cell
+    Nspin = len(sm.atom_pos())  # number of spins in a unit cell
 
     qsx = np.arange(0 - np.e / 1e5, 1 + 0.01, 0.01)
     q = []

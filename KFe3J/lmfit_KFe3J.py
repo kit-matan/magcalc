@@ -10,6 +10,7 @@ fit the spin-wave data of KFe3J using lmfit package
 
 The data and results are from PRL 96, 247201 (2006).
 """
+import spin_model as sm
 import numpy as np
 import magcalc as mc
 from numpy import loadtxt
@@ -91,7 +92,7 @@ if __name__ == "__main__":
 
     # Plot the fitting result with the data
     S = 5.0 / 2.0
-    nspins = 3
+    nspins = len(sm.atom_pos())
     qsx = np.arange(0, 2 * np.pi / np.sqrt(3) + 0.05, 0.05)
     qsy = np.arange(0, 2 * np.pi + 0.05, 0.05)
     q = []

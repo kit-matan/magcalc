@@ -8,6 +8,7 @@ This work is based on the paper PRB 106, 214438 (2022).
 
 fit the spin-wave data of Zn-doped Cu2V2O7
 """
+import spin_model as sm
 import numpy as np
 import magcalc as mc
 from numpy import loadtxt
@@ -23,7 +24,7 @@ def sw_ZnCVO(x, J1, J2, J3, J4, J5, J6, J7, G, H):
     bstr = 0.78257113
     cstr = 0.66266382
     beta = 110.251999
-    Nspin = 8
+    Nspin = len(sm.atom_pos())  # number of spins in a unit cell
     S = 1.0 / 2.0
     p = [J1, J2, J3, J4, J5, J6, J7, G, H]
     k = []

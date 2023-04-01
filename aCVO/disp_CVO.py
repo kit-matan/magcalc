@@ -6,6 +6,7 @@ Created on Mon Aug 13 01:18:18 2018
 
 @author: Kit Matan
 """
+import spin_model as sm
 import numpy as np
 from timeit import default_timer
 import matplotlib.pyplot as plt
@@ -15,7 +16,7 @@ if __name__ == "__main__":
     st = default_timer()
     S = 1.0 / 2.0  # spin value
     p = [2.49, 1.12 * 2.49, 2.03 * 2.49, 0.28, 0, 0, 2.67, 0, 0, 0, 0, 0, 0, 0, 0.0]
-    Nspin = 16  # number of spins in a unit cell
+    Nspin = len(sm.atom_pos())  # number of spins in a unit cell
 
     qsy = np.arange(1, 3 + 0.02, 0.02)
     q = []

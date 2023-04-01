@@ -5,6 +5,7 @@ Created on Mon Aug 13 01:22:57 2018
 
 @author: kmatan
 """
+import spin_model as sm
 import numpy as np
 from timeit import default_timer
 import magcalc as mc
@@ -19,7 +20,7 @@ def plot_HKmap(p, newcalc, E_intv):
     # spin-wave intensity S(Q,\omega)
     st = default_timer()
     S = 1.0 / 2.0  # spin value
-    Nspin = 16  # number of spins in a unit cell
+    Nspin = len(sm.atom_pos())  # number of spins in a unit cell
     a = 20.645
     b = 8.383
     c = 6.442

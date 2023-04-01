@@ -6,6 +6,7 @@ Created on Mon Aug 13 01:22:57 2018
 @author: Ganatee Gitgeatpong and Kit Matan
 This work is based on the paper PRB 106, 214438 (2022).
 """
+import spin_model as sm
 import numpy as np
 from timeit import default_timer
 import magcalc as mc
@@ -18,7 +19,7 @@ def plot_Sqw_EKmap(S, p, newcalc, wr):
     astr = 0.87101208
     bstr = 0.78257113
     cstr = 0.66266382
-    Nspin = 8  # number of spins in a unit cell
+    Nspin = len(sm.atom_pos())  # number of spins in a unit cell
 
     qsy = np.arange(1 - np.e / 1e5, 3 + 0.01, 0.01)
     q = []

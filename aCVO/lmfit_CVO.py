@@ -8,6 +8,7 @@ Created on Mon Aug 20 15:11:17 2018
 fit the spin-wave data of alpha-Cu2V2O7
 The data and results are from PRL 119, 047201 (2017).
 """
+import spin_model as sm
 import numpy as np
 import magcalc as mc
 from numpy import loadtxt
@@ -18,7 +19,7 @@ from lmfit import Model
 
 
 def sw_CVO(x, J1, J2, J3, G1, Dx, H):
-    Nspin = 16
+    Nspin = len(sm.atom_pos())
     S = 1.0 / 2.0
     p = [J1, J2, J3, G1, 0, 0, Dx, 0, 0, 0, 0, 0, 0, 0, H]
     k = []
