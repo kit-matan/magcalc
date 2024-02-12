@@ -26,7 +26,7 @@ if __name__ == "__main__":
         qz = 0
         q1 = [qx, qy, qz]
         q.append(q1)
-    En_ky = mc.calc_disp(S, q, p, Nspin, 'CVO', 'r')
+    En_ky = mc.calc_disp(S, q, p, Nspin, 'CVO', 'w')
 
     Eky1 = [En_ky[i][0] for i in range(len(En_ky))]
     Eky2 = [En_ky[i][1] for i in range(len(En_ky))]

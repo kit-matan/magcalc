@@ -6,6 +6,7 @@ Created on Mon Aug 13 01:18:18 2018
 @author: Ganatee Gitgeatpong and Kit Matan
 This work is based on the paper PRB 106, 214438 (2022).
 """
+from numba import jit
 import spin_model as sm
 import numpy as np
 from timeit import default_timer

@@ -10,9 +10,12 @@ Translated from Mathematica and Octave codes written by Taku J Sato.
 """
 # this file contains spin model; see example
 # edit spin_model.py
+from numba import jit
 import spin_model as sm
 import sympy as sp
 from sympy import I
+from sympy import lambdify
+from sympy import Add
 import numpy as np
 # from numpy import linalg as la
 from scipy import linalg as la
@@ -20,7 +23,16 @@ import timeit
 import sys
 import pickle
 from multiprocessing import Pool
+import multiprocessing as mp
+# import symengine as se # SymEngine does not support non-commutative symbols!
 
+def substitute_expr(expr, subs_dict):
+    """Substitute the Hamiltonian matrix with the dictionary of substitutions
+    inputs: HM is the Hamiltonian matrix
+            subs_dict is the dictionary of substitutions
+    output: HM_subs is the Hamiltonian matrix after substitution"""
+    expr_subs = expr.subs(subs_dict, simultaneous=True)
+    return expr_subs
 
 def gen_HM(k, S, params):
     """generate the spin Hamiltonian
@@ -38,19 +50,13 @@ def gen_HM(k, S, params):
     # with Z as quantization axis
     c = sp.symbols('c0:%d' % nspins_ouc, commutative=False)
     cd = sp.symbols('cd0:%d' % nspins_ouc, commutative=False)
-    Sabn_local = []
-    for i in range(nspins_ouc):
-        bose_op = sp.Matrix((sp.sqrt(S / 2) * (c[i] + cd[i]),
-                             sp.sqrt(S / 2) * (c[i] - cd[i]) / I,
-                             S - cd[i] * c[i]))
-        Sabn_local.append(bose_op)
+    Sabn_local = [sp.Matrix((sp.sqrt(S / 2) * (c[i] + cd[i]),
+                         sp.sqrt(S / 2) * (c[i] - cd[i]) / I,
+                         S - cd[i] * c[i])) for i in range(nspins_ouc)]
 
     # rotate spin operators to global coordinates
-    Sabn = []
     mp = sm.mpr(params)  # the rotation matrices can depend on the Hamiltonian parameters
-    for i in range(int(nspins_ouc / nspins)):
-        for j in range(nspins):
-            Sabn.append(mp[j] * Sabn_local[nspins * i + j])
+    Sabn = [mp[j] * Sabn_local[nspins * i + j] for i in range(int(nspins_ouc / nspins)) for j in range(nspins)]
 
     # generate the spin Hamiltonian
     HM = sm.Hamiltonian(Sabn, params)
@@ -61,29 +67,17 @@ def gen_HM(k, S, params):
     HM = sp.expand(HM)
 
     # perform Fourier transformation
-    ck = []
-    ckd = []
-    cmk = []
-    cmkd = []
-    for i in range(int(nspins_ouc / nspins)):
-        for j in range(nspins):
-            ck1 = sp.Symbol('ck%d' % j, commutative=False)
-            ckd1 = sp.Symbol('ckd%d' % j, commutative=False)
-            cmk1 = sp.Symbol('cmk%d' % j, commutative=False)
-            cmkd1 = sp.Symbol('cmkd%d' % j, commutative=False)
-            ck.append(ck1)
-            ckd.append(ckd1)
-            cmk.append(cmk1)
-            cmkd.append(cmkd1)
+    ck = [sp.Symbol('ck%d' % j, commutative=False) for i in range(int(nspins_ouc / nspins)) for j in range(nspins)]
+    ckd = [sp.Symbol('ckd%d' % j, commutative=False) for i in range(int(nspins_ouc / nspins)) for j in range(nspins)]
+    cmk = [sp.Symbol('cmk%d' % j, commutative=False) for i in range(int(nspins_ouc / nspins)) for j in range(nspins)]
+    cmkd = [sp.Symbol('cmkd%d' % j, commutative=False) for i in range(int(nspins_ouc / nspins)) for j in range(nspins)]
 
     # generate dictionary for substitution
     Jex = sm.spin_interactions(params)[0]
     fourier_dict = []
     for i in range(nspins):
         for j in range(nspins_ouc):
-            if Jex[i, j] == 0:
-                pass
-            else:
+            if Jex[i, j] != 0:
                 dr = apos[i] - apos_ouc[j]
                 k_dot_dr = k[0] * dr[0, 0] + k[1] * dr[0, 1] + k[2] * dr[0, 2]
                 ent1 = [cd[i] * cd[j], 1 / 2 * (ckd[i] * cmkd[j] * sp.exp(-I * k_dot_dr).rewrite(sp.sin) +
@@ -95,17 +89,19 @@ def gen_HM(k, S, params):
                 ent4 = [c[i] * cd[j], 1 / 2 * (ck[i] * ckd[j] * sp.exp(I * k_dot_dr).rewrite(sp.sin) +
                                                cmk[i] * cmkd[j] * sp.exp(-I * k_dot_dr).rewrite(sp.sin))]
                 ent5 = [cd[j] * c[j], 1 / 2 * (ckd[j] * ck[j] + cmkd[j] * cmk[j])]
-                fourier_dict.append(ent1)
-                fourier_dict.append(ent2)
-                fourier_dict.append(ent3)
-                fourier_dict.append(ent4)
-                fourier_dict.append(ent5)
+                fourier_dict.extend([ent1, ent2, ent3, ent4, ent5])
 
     # substitution Fourier transform
     print('Running the Fourier transform ...')
     print('A number of entries for substitution: ', len(fourier_dict))
     st = timeit.default_timer()
-    HMk = HM.subs(fourier_dict, simultaneous=True)
+    HM_terms = HM.as_ordered_terms()
+    length = len(HM_terms)
+    print('A number of terms in the Hamiltonian: ', length)    
+    with Pool() as p:
+        HMk_terms = p.starmap(substitute_expr, [(expr, fourier_dict) for expr in HM_terms])
+    # HMk = HM.subs(fourier_dict, simultaneous=True)
+    HMk = Add(*HMk_terms)
     et = timeit.default_timer()
     print('Run-time for the Fourier transform ', np.round((et - st) / 60, 2), ' min.')
 
@@ -132,7 +128,14 @@ def gen_HM(k, S, params):
     # HMk_comm is the Hamiltonian after applying the commutation relations
     st = timeit.default_timer()
     print('A number of entries for commutation-relation substitution: ', len(comm_dict))
-    HMk_comm = HMk.subs(comm_dict, simultaneous=True)
+    HMk_terms = HMk.as_ordered_terms()
+    length = len(HMk_terms)
+    print('A number of terms in the Hamiltonian: ', length)
+    with Pool() as p:
+        HMk_terms = p.starmap(substitute_expr, [(expr, comm_dict) for expr in HMk_terms])
+    # HMk = HM.subs(fourier_dict, simultaneous=True)
+    HMk_comm = Add(*HMk_terms)
+    # HMk_comm = HMk.subs(comm_dict, simultaneous=True)
     HMk_comm = HMk_comm.expand()
     et = timeit.default_timer()
     print('Run-time for the commutation relation substitution ', np.round((et - st) / 60, 2), ' min.')
@@ -153,7 +156,13 @@ def gen_HM(k, S, params):
 
     st = timeit.default_timer()
     print('A number of entries for XdX substitution: ', len(XdX_subs))
-    HMk_comm_XdX = HMk_comm.subs(XdX_subs, simultaneous=True)
+    HMk_comm_terms = HMk_comm.as_ordered_terms()
+    length = len(HMk_comm_terms)
+    print('A number of terms in the Hamiltonian: ', length)
+    with Pool() as p:
+        HMk_comm_terms = p.starmap(substitute_expr, [(expr, XdX_subs) for expr in HMk_comm_terms])
+    HMk_comm_XdX = Add(*HMk_comm_terms)
+    # HMk_comm_XdX = HMk_comm.subs(XdX_subs, simultaneous=True)
     et = timeit.default_timer()
     print('Run-time for the substitution of XdX', np.round((et - st) / 60, 2), ' min.')
 
@@ -205,7 +214,11 @@ def KKdMatrix(Sp, Hkp, Hkm, Ud, q, nspins):
             Hkm: Hamiltonian for negative q
             Ud: spin rotation operators
             q: momentum transfer
-            nspins: number of spins"""
+            nspins: number of spins
+        outputs:
+            K: K matrix
+            Kd: Kd matrix
+            e_val: eigenvalues"""
     dEdeg = 10e-12  # degeneracy threshold
     G = np.bmat([[np.eye(nspins), np.zeros((nspins, nspins))],
                  [np.zeros((nspins, nspins)), -np.eye(nspins)]])
@@ -374,12 +387,20 @@ def process_calc_Sqw(HMat, Ud, k, q, nspins, Sp):
             k: wave vector
             q: momentum transfer
             nspins: number of spins
-            Sp: spin quantum number"""
+            Sp: spin quantum number
+        Outputs:
+            Sqwout: scattering intensity
+            qout: momentum transfer
+            En: eigenvalues"""
     Sqwout0 = np.zeros(nspins, dtype=complex)
-    Hkp = HMat.subs({k[0]: q[0], k[1]: q[1], k[2]: q[2]}, simultaneous=True).evalf()
+    # Create a lambda function for HMat
+    HMat_func = lambdify([k[0], k[1], k[2]], HMat)
+    # Use the lambda function to substitute and evaluate
+    Hkp = HMat_func(q[0], q[1], q[2])
     Hkp = np.mat(Hkp).astype(np.complex_)
-    Hkm = HMat.subs({k[0]: -q[0], k[1]: -q[1], k[2]: -q[2]}, simultaneous=True).evalf()
+    Hkm = HMat_func(-q[0], -q[1], -q[2])
     Hkm = np.mat(Hkm).astype(np.complex_)
+
     K, Kd, evals = KKdMatrix(Sp, Hkp, Hkm, Ud, q, nspins)
     # En = np.real_if_close(evals[0:nspins])
     En = np.real(evals[0:nspins])
@@ -421,7 +442,11 @@ def calc_Sqw(Sp, q, p, nspins, file, rd_or_wr):
             p: parameters
             nspins: number of spins
             file: file name
-            rd_or_wr: read or write the Hamiltonian matrix to a file"""
+            rd_or_wr: read or write the Hamiltonian matrix to a file
+        Outputs:
+            qout: momentum transfer
+            En: energy
+            Sqwout: scattering intensity"""
     print('Calculating scattering intensity ...')
     kx, ky, kz = sp.symbols('kx ky kz', real=True)
     k = [kx, ky, kz]
@@ -449,11 +474,7 @@ def calc_Sqw(Sp, q, p, nspins, file, rd_or_wr):
         sys.exit()
 
     # substitute for Hamiltonian parameters and S
-    param_subs = [[S, Sp]]
-    for i in range(len(p)):
-        params1 = [params[i], p[i]]
-        param_subs.append(params1)
-
+    param_subs = [[S, Sp]] + [[params[i], p[i]] for i in range(len(p))]
     HMat = HMat.subs(param_subs, simultaneous=True).evalf()
     Ud = Ud.subs(param_subs, simultaneous=True).evalf()
     Ud = np.mat(Ud).astype(np.float_)
@@ -461,20 +482,12 @@ def calc_Sqw(Sp, q, p, nspins, file, rd_or_wr):
     print('Running the diagonalization ...')
     st = timeit.default_timer()
     # generate arguments for multiprocessing input
-    arg = []
-    for i in range(len(q)):
-        arg.append((HMat, Ud, k, q[i], nspins, Sp))
+    args = [(HMat, Ud, k, q[i], nspins, Sp) for i in range(len(q))]
     # use multiprocessing
     with Pool() as pool:
-        results = pool.starmap(process_calc_Sqw, arg)
+        results = pool.starmap(process_calc_Sqw, args)
 
-    qout = []
-    En = []
-    Sqwout = []
-    for i in range(len(q)):
-        qout.append(results[i][0])
-        En.append(results[i][1])
-        Sqwout.append(results[i][2])
+    qout, En, Sqwout = zip(*results)
 
     et = timeit.default_timer()
     print('Run-time for the diagonalization: ', np.round((et - st) / 60, 2))
@@ -488,8 +501,14 @@ def process_calc_disp(HMat, k, q, nspins):
             HMat: Hamiltonian matrix
             k: momentum
             q: momentum transfer
-            nspins: number of spins"""
-    HMat_k = HMat.subs({k[0]: q[0], k[1]: q[1], k[2]: q[2]}, simultaneous=True).evalf()
+            nspins: number of spins
+        Outputs:
+            eigval: eigenvalues of the Hamiltonian matrix"""
+    # HMat_k = HMat.subs({k[0]: q[0], k[1]: q[1], k[2]: q[2]}, simultaneous=True).evalf()
+    # Create a lambda function for HMat
+    HMat_func = lambdify([k[0], k[1], k[2]], HMat)
+    # Use the lambda function to substitute and evaluate
+    HMat_k = HMat_func(q[0], q[1], q[2])
     HMat_k = np.mat(HMat_k).astype(np.complex_)
     eigval = la.eigvals(HMat_k)
     # check whether all eigen-energies are real
@@ -510,7 +529,9 @@ def calc_disp(Sp, q, p, nspins, file, rd_or_wr):
             p: parameters
             nspins: number of spins
             file: file name
-            rd_or_wr: read or write the Hamiltonian matrix to a file"""
+            rd_or_wr: read or write the Hamiltonian matrix to a file
+        Outputs:
+            En: energy"""
     kx, ky, kz = sp.symbols('kx ky kz', real=True)
     k = [kx, ky, kz]
     S = sp.Symbol('S', real=True)
@@ -535,21 +556,16 @@ def calc_disp(Sp, q, p, nspins, file, rd_or_wr):
         sys.exit()
 
     # create a substitution list for the Hamiltonian parameters
-    param_subs = [[S, Sp]]
-    for i in range(len(p)):
-        params1 = [params[i], p[i]]
-        param_subs.append(params1)
+    param_subs = [[S, Sp]] + [[params[i], p[i]] for i in range(len(p))]
     HMat = HMat.subs(param_subs, simultaneous=True).evalf()
 
     print('Running the diagonalization ...')
     st = timeit.default_timer()
     # generate arguments for multiprocessing input
-    arg = []
-    for i in range(len(q)):
-        arg.append((HMat, k, q[i], nspins))
+    args = [(HMat, k, q_i, nspins) for q_i in q]
     # use multiprocessing
     with Pool() as pool:
-        En = pool.starmap(process_calc_disp, arg)
+        En = pool.starmap(process_calc_disp, args)
 
     et = timeit.default_timer()
     print('Run-time for the diagonalization: ', np.round((et - st) / 60, 2))
