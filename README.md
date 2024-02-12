@@ -37,5 +37,4 @@ to calculate and plot spin-wave dispersion. You must first run **disp_---.py** t
 One has to edit **spin_model.py** for a different system. 
 
 ### Issues:
-  - The code uses SymPy for symbolic manipulation and can be very slow for a large system.  For example, it takes about 1 hour (on *iMac 5K 27-inch 2020 3.6GHz 10-Core Intel Core i9 with 32GB RAM*) to generate a matrix for **&alpha;-Cu<sub>2</sub>V<sub>2</sub>O<sub>7</sub>** with 16 spins in a magnetic unit cell.
-  - Calculations can be prolonged for a large matrix even with *multiprocessing*.
+  - The code uses SymPy for symbolic manipulation and can be slow for a large system. We use multiprocessing for sympy.subs.  It takes about a few minutes (on *MacBook Pro M1 Pro*) to generate a matrix for **&alpha;-Cu<sub>2</sub>V<sub>2</sub>O<sub>7</sub>** with 16 spins in a magnetic unit cell.
