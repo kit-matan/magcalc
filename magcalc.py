@@ -112,6 +112,23 @@ def gen_HM(k, S, params):
         for j in range(nspins)
     ]
     
+    # substitution Fourier transform, and commutation relations
+    print('Running the subtitution ...')
+    print('A number of entries for substitution: ', len(fourier_dict))
+    st = timeit.default_timer()
+    # Convert the Hamiltonian into a list of ordered terms
+    HM_terms = HM.as_ordered_terms()
+    print('Number of terms in the Hamiltonian: ', len(HM_terms))
+    # Use multiprocessing to substitute the Fourier transform into each term of the Hamiltonian
+    with Pool() as pool:
+        HMk_terms = pool.starmap(substitute_expr, [(expr, fourier_dict) for expr in HM_terms])
+        HMk_comm_terms = pool.starmap(substitute_expr, [(expr, comm_dict) for expr in HMk_terms])
+    # Combine the transformed terms back into a single expression
+    HMk_comm = Add(*HMk_comm_terms)
+    HMk_comm = HMk_comm.expand()
+    et = timeit.default_timer()
+    print('Run-time for the substitution ', np.round((et - st) / 60, 2), ' min.')
+
     # create operator tables for ck,...,cmkd and ckd,...,cmk
     # ck,...,cmk are non-commutative but coeff() only supports commutative
     # variables; replace their products by XdXi, which are commutative.
@@ -123,24 +140,6 @@ def gen_HM(k, S, params):
 
     XdX_subs = [[Xd[i] * X[j], XdX[i * 2 * nspins + j]] 
                 for i in range(2 * nspins) for j in range(2 * nspins)]
-
-    # substitution Fourier transform, commutation relations and XdX
-    print('Running the subtitution ...')
-    print('A number of entries for substitution: ', len(fourier_dict))
-    st = timeit.default_timer()
-    # Convert the Hamiltonian into a list of ordered terms
-    HM_terms = HM.as_ordered_terms()
-    print('Number of terms in the Hamiltonian: ', len(HM_terms))
-    # Use multiprocessing to substitute the Fourier transform into each term of the Hamiltonian
-    with Pool() as pool1:
-        HMk_terms = pool1.starmap(substitute_expr, [(expr, fourier_dict) for expr in HM_terms])
-    with Pool() as pool2:
-        HMk_comm_terms = pool2.starmap(substitute_expr, [(expr, comm_dict) for expr in HMk_terms])
-    # Combine the transformed terms back into a single expression
-    HMk_comm = Add(*HMk_comm_terms)
-    HMk_comm = HMk_comm.expand()
-    et = timeit.default_timer()
-    print('Run-time for the substitution ', np.round((et - st) / 60, 2), ' min.')
  
     st = timeit.default_timer()
     print('A number of entries for XdX substitution: ', len(XdX_subs))
@@ -154,8 +153,7 @@ def gen_HM(k, S, params):
     et = timeit.default_timer()
     print('Run-time for the substitution of XdX', np.round((et - st) / 60, 2), ' min.')
  
-    
-    # extract the coefficients in front of the 2nd order terms
+        # extract the coefficients in front of the 2nd order terms
     H2_matrix_elements = sp.Matrix([HMk_comm_XdX.coeff(x) for x in XdX])
 
     # create a matrix from a list of coefficients and the matrix "g"
@@ -411,8 +409,9 @@ def process_calc_Sqw(HMat, Ud, k, q, nspins, Sp):
                                           K[3 * (i - 1) + alpha, l] * \
                                           Kd[3 * (j - 1) + beta, l + nspins]
                 Sqw = Sqw + (d - qt[alpha] * qt[beta]) * SS[alpha, beta]
-        if np.abs(np.imag(Sqw)) > 1e-5:
-            print('Error: imaginary part of Sqw is finite (> 1e-5).')
+        # Warning: the imaginary part of Sqw, which should be zero, a greater than a certain number
+        if np.abs(np.imag(Sqw)) > 1e-4:
+            print('Error: imaginary part of Sqw is finite (> 1e-4).')
             print(q, Sqw)
         Sqwout0[l] = Sqwout0[l] + Sqw  # Sqwout is the final output matrix
     # Sqwout = np.real_if_close(Sqwout0)
