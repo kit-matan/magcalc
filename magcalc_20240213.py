@@ -91,7 +91,20 @@ def gen_HM(k, S, params):
             [cd[j] * c[j], 1 / 2 * (ckd[j] * ck[j] + cmkd[j] * cmk[j])]
         ]
     ]
-    
+    # substitution Fourier transform
+    print('Running the Fourier transform ...')
+    print('A number of entries for substitution: ', len(fourier_dict))
+    st = timeit.default_timer()
+    # Convert the Hamiltonian into a list of ordered terms
+    HM_terms = HM.as_ordered_terms()
+    # Use multiprocessing to substitute the Fourier transform into each term of the Hamiltonian
+    with Pool() as p:
+        HMk_terms = p.starmap(substitute_expr, [(expr, fourier_dict) for expr in HM_terms])
+    # Combine the transformed terms back into a single expression
+    HMk = Add(*HMk_terms)
+    et = timeit.default_timer()
+    print('Run-time for the Fourier transform ', np.round((et - st) / 60, 2), ' min.')
+
     # apply commutation relations so that all 2nd order terms are written as
     # ckd*ck, cmk*cmkd, cmk*ck and ckd*cmkd
     comm_dict = [
@@ -112,6 +125,20 @@ def gen_HM(k, S, params):
         for j in range(nspins)
     ]
     
+    # HMk_comm is the Hamiltonian after applying the commutation relations
+    st = timeit.default_timer()
+    print('A number of entries for commutation-relation substitution: ', len(comm_dict))
+    # Convert the Hamiltonian into a list of ordered terms
+    HMk_terms = HMk.as_ordered_terms()
+    # Use multiprocessing to substitute the Fourier transform into each term of the Hamiltonian
+    with Pool() as p:
+        HMk_terms = p.starmap(substitute_expr, [(expr, comm_dict) for expr in HMk_terms])
+    # Combine the transformed terms back into a single expression
+    HMk_comm = Add(*HMk_terms)
+    HMk_comm = HMk_comm.expand()
+    et = timeit.default_timer()
+    print('Run-time for the commutation relation substitution ', np.round((et - st) / 60, 2), ' min.')
+
     # create operator tables for ck,...,cmkd and ckd,...,cmk
     # ck,...,cmk are non-commutative but coeff() only supports commutative
     # variables; replace their products by XdXi, which are commutative.
@@ -124,24 +151,6 @@ def gen_HM(k, S, params):
     XdX_subs = [[Xd[i] * X[j], XdX[i * 2 * nspins + j]] 
                 for i in range(2 * nspins) for j in range(2 * nspins)]
 
-    # substitution Fourier transform, commutation relations and XdX
-    print('Running the subtitution ...')
-    print('A number of entries for substitution: ', len(fourier_dict))
-    st = timeit.default_timer()
-    # Convert the Hamiltonian into a list of ordered terms
-    HM_terms = HM.as_ordered_terms()
-    print('Number of terms in the Hamiltonian: ', len(HM_terms))
-    # Use multiprocessing to substitute the Fourier transform into each term of the Hamiltonian
-    with Pool() as pool1:
-        HMk_terms = pool1.starmap(substitute_expr, [(expr, fourier_dict) for expr in HM_terms])
-    with Pool() as pool2:
-        HMk_comm_terms = pool2.starmap(substitute_expr, [(expr, comm_dict) for expr in HMk_terms])
-    # Combine the transformed terms back into a single expression
-    HMk_comm = Add(*HMk_comm_terms)
-    HMk_comm = HMk_comm.expand()
-    et = timeit.default_timer()
-    print('Run-time for the substitution ', np.round((et - st) / 60, 2), ' min.')
- 
     st = timeit.default_timer()
     print('A number of entries for XdX substitution: ', len(XdX_subs))
     # Convert the Hamiltonian into a list of ordered terms
@@ -153,8 +162,7 @@ def gen_HM(k, S, params):
     HMk_comm_XdX = Add(*HMk_comm_terms)
     et = timeit.default_timer()
     print('Run-time for the substitution of XdX', np.round((et - st) / 60, 2), ' min.')
- 
-    
+
     # extract the coefficients in front of the 2nd order terms
     H2_matrix_elements = sp.Matrix([HMk_comm_XdX.coeff(x) for x in XdX])
 
