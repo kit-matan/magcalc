@@ -16,6 +16,7 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
 import pickle
 
+
 def plot_map(p, S, nspins, wr, newcalc):
     """Spin-wave intensity map S(Q,\omega)
         Inputs:
@@ -75,13 +76,25 @@ def plot_map(p, S, nspins, wr, newcalc):
             fint_ky = 0
 
     qsyn = 2 * np.pi + 2 * np.pi / np.sqrt(3) - qsy
-    # qsyn = np.flip(qsyn, 0)
+    qsyn = np.flip(qsyn, 0)
     qs = np.concatenate((qsx, qsyn))
-    X, Y = np.meshgrid(qs, Ex)
-    # intMat_ky = np.flip(intMat_ky, 1)
+    intMat_ky = np.flip(intMat_ky, 1)
     intMat = np.concatenate([intMat_kx, intMat_ky], axis=-1)
-    # plt.pcolor(X, Y, intMat)
-    plt.pcolormesh(X, Y, intMat, norm=LogNorm(vmin=intMat.min(), vmax=intMat.max()), cmap='PuBu_r', shading='auto')
+
+    qs = np.array(qs)
+    Ex = np.array(Ex)
+    intMat = np.array(intMat)
+
+    # Sort the data
+    sort_index_qs = np.argsort(qs)
+    sort_index_Ex = np.argsort(Ex)
+
+    qs = qs[sort_index_qs]
+    Ex = Ex[sort_index_Ex]
+    intMat = intMat[:, sort_index_qs]
+    intMat = intMat[sort_index_Ex, :]
+
+    plt.pcolormesh(qs, Ex, intMat, norm=LogNorm(vmin=intMat.min(), vmax=intMat.max()), cmap='PuBu_r', shading='auto')
     plt.xlim([-np.pi / np.sqrt(3), 2 * np.pi / np.sqrt(3) + 3 * np.pi])
     plt.ylim([0, 20])
     plt.xticks([])
@@ -105,7 +118,7 @@ if __name__ == "__main__":
     # p = [12.8, -1.23, 0.063 * 12.8, -0.25 * 12.8, 0]
     nspins = len(sm.atom_pos())  # number of spins in a unit cell
     p = [3.23, 0.11, 0.218, -0.195, 0]
-    plot_map(p, S, nspins, 'r', 1)
+    plot_map(p, S, nspins, 'w', 1)
     et_main = default_timer()
     print('Total run-time: ', np.round((et_main-st_main) / 60, 2), ' min.')
 

@@ -79,7 +79,7 @@ def spin_interactions(p):
     """Generate spin interactions
        Input:
            p: list of parameters [J1, J2, Dy, Dz, H]""" 
-    # Eexchange interactions J's
+    # Exchange interactions J's
     J1 = p[0]
     J2 = p[1]
     Dy = p[2]

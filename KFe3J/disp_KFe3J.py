@@ -8,14 +8,11 @@ Created on Mon Aug 13 01:18:18 2018
 
 Calculate and plot the spin-wave dispersion for KFe3(OH)6(SO4)2
 """
-# from numba import jit
 import spin_model as sm
 import numpy as np
 from timeit import default_timer
 import matplotlib.pyplot as plt
 import magcalc as mc
-
-#check is the code is push to GitHub
 
 
 def plot_disp(p, S, nspins, wr):

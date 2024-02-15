@@ -25,12 +25,12 @@ to calculate spin-waves by **magcalc.py**
 In a terminal, run the following commands
 ```
 $ export PYTHONPATH=<Path to magcalc.py>
-$ cd <Path to magcalc.py>
+$ cd <Path to Python files>
 $ mkdir pckFiles
 ```
 and then run, for example,
 ```
-$ python3 KFe3J/disp_KFe3J.py
+$ python3 disp_KFe3J.py
 ```
 to calculate and plot spin-wave dispersion. You must first run **disp_---.py** to generate and store a matrix in a .pck file. The folder **pckFiles** contains auxiliary files used to store matrices and calculated intensity.
 

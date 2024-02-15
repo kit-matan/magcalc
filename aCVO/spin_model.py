@@ -287,8 +287,6 @@ def Hamiltonian(Sxyz, p):
     Nspin = len(apos)
     apos_ouc = atom_pos_ouc()
     Nspin_ouc = len(apos_ouc)
-    print('Spins in the unit cell: ', Nspin)
-    print('Spins in the neighboring unit cells: ', Nspin_ouc)
     for i in range(Nspin):
         for j in range(Nspin_ouc):
             if Jex[i, j] != 0:
