@@ -8,7 +8,6 @@ Created on Mon Aug 13 01:22:57 2018
 
 Create an intensity contour map of Q and energy for spin-waves in KFe3(OH)6(SO4)2
 """
-import spin_model as sm
 import numpy as np
 from timeit import default_timer
 import magcalc as mc
@@ -17,7 +16,7 @@ from matplotlib.colors import LogNorm
 import pickle
 
 
-def plot_map(p, S, nspins, wr, newcalc):
+def plot_map(p, S, wr, newcalc):
     """Spin-wave intensity map S(Q,\omega)
         Inputs:
             p: list of parameters
@@ -37,7 +36,7 @@ def plot_map(p, S, nspins, wr, newcalc):
         q.append(np.array([0, qsy[i], 0]))
 
     if newcalc == 1:
-        qout, En, Sqwout = mc.calc_Sqw(S, q, p, nspins, 'KFe3J', wr)
+        qout, En, Sqwout = mc.calc_Sqw(S, q, p, 'KFe3J', wr)
         with open('pckFiles/KFe3J_EQmap_En.pck', 'wb') as outEn:
             outEn.write(pickle.dumps(En))
         with open('pckFiles/KFe3J_EQmap_Sqw.pck', 'wb') as outSqwout:
@@ -116,9 +115,8 @@ if __name__ == "__main__":
     # CCSF
     # S = 1.0 / 2.0
     # p = [12.8, -1.23, 0.063 * 12.8, -0.25 * 12.8, 0]
-    nspins = len(sm.atom_pos())  # number of spins in a unit cell
     p = [3.23, 0.11, 0.218, -0.195, 0]
-    plot_map(p, S, nspins, 'w', 1)
+    plot_map(p, S, 'r', 1)
     et_main = default_timer()
     print('Total run-time: ', np.round((et_main-st_main) / 60, 2), ' min.')
 

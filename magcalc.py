@@ -58,7 +58,7 @@ def gen_HM(k, S, params):
     # rotate spin operators to global coordinates
     mp = sm.mpr(params)  # the rotation matrices can depend on the Hamiltonian parameters
     Sabn = [mp[j] * Sabn_local[nspins * i + j] for i in range(int(nspins_ouc / nspins)) for j in range(nspins)]
-
+ 
     # generate the spin Hamiltonian
     HM = sm.Hamiltonian(Sabn, params)
     HM = sp.expand(HM)
@@ -80,8 +80,8 @@ def gen_HM(k, S, params):
         for i in range(nspins)
         for j in range(nspins_ouc)
         if Jex[i, j] != 0
-        for dr in [apos[i] - apos_ouc[j]]
-        for k_dot_dr in [k[0] * dr[0, 0] + k[1] * dr[0, 1] + k[2] * dr[0, 2]]
+        for dr in [apos[i,:] - apos_ouc[j,:]]
+        for k_dot_dr in [k[0] * dr[0] + k[1] * dr[1] + k[2] * dr[2]]
         for ent in [
             [cd[i] * cd[j], 1 / 2 * (ckd[i] * cmkd[j] * sp.exp(-I * k_dot_dr).rewrite(sp.sin) +
                                      cmkd[i] * ckd[j] * sp.exp(I * k_dot_dr).rewrite(sp.sin))],
@@ -445,7 +445,7 @@ def process_calc_Sqw(args):
     return qout, En, Sqwout
 
 
-def calc_Sqw(Sp, q, p, nspins, file, rd_or_wr):
+def calc_Sqw(Sp, q, p, file, rd_or_wr):
     """calculate the scattering intensity; Sqw with the geometric factor
         Inputs:
             Sp: spin quantum number
@@ -458,7 +458,10 @@ def calc_Sqw(Sp, q, p, nspins, file, rd_or_wr):
             qout: momentum transfer
             En: energy
             Sqwout: scattering intensity"""
+    
     print('Calculating scattering intensity ...')
+    
+    nspins = len(sm.atom_pos())
     kx, ky, kz = sp.symbols('kx ky kz', real=True)
     k = [kx, ky, kz]
     S = sp.Symbol('S', real=True)
@@ -513,7 +516,7 @@ def process_calc_disp(args):
     return eigval
 
 
-def calc_disp(Sp, q, p, nspins, file, rd_or_wr):
+def calc_disp(Sp, q, p, file, rd_or_wr):
     """Calculate dispersion relation
         Inputs:
             Sp: spin quantum number
@@ -524,6 +527,10 @@ def calc_disp(Sp, q, p, nspins, file, rd_or_wr):
             rd_or_wr: read or write the Hamiltonian matrix to a file
         Outputs:
             En: energy"""
+
+    print('Running the diagonalization ...')
+
+    nspins = len(sm.atom_pos())
     kx, ky, kz = sp.symbols('kx ky kz', real=True)
     k = [kx, ky, kz]
     S = sp.Symbol('S', real=True)
@@ -536,7 +543,6 @@ def calc_disp(Sp, q, p, nspins, file, rd_or_wr):
     param_subs = [[S, Sp]] + [[params[i], p[i]] for i in range(len(p))]
     HMat = HMat.subs(param_subs, simultaneous=True).evalf()
 
-    print('Running the diagonalization ...')
     st = timeit.default_timer()
     # multiprocessing
     with Pool() as pool:

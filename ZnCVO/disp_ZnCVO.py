@@ -6,8 +6,6 @@ Created on Mon Aug 13 01:18:18 2018
 @author: Ganatee Gitgeatpong and Kit Matan
 This work is based on the paper PRB 106, 214438 (2022).
 """
-from numba import jit
-import spin_model as sm
 import numpy as np
 from timeit import default_timer
 import matplotlib.pyplot as plt
@@ -21,7 +19,6 @@ def plot_dispersion(p, wr):
         p: a list of parameters'''
     S = 1 / 2 # spin quantum number
     beta = 110.251999
-    Nspin = len(sm.atom_pos())  # number of spins in a unit cell
     astr = 0.87101208
     bstr = 0.78257113
     cstr = 0.66266382
@@ -39,12 +36,12 @@ def plot_dispersion(p, wr):
         qz1 = qsx[i] * cstr * np.sin(math.radians(beta-90))
         q1 = [qx1, qy1, qz1]
         qH.append(q1)
-    En_kx = mc.calc_disp(S, qH, p, Nspin, 'ZnCVO', wr)
+    En_kx = mc.calc_disp(S, qH, p, 'ZnCVO', wr)
     # Calculate the spin-wave dispersion along the [010] direction
     for i in range(len(qsy)):
         q2 = [0, qsy[i] * bstr, 0]
         qK.append(q2)
-    En_ky = mc.calc_disp(S, qK, p, Nspin, 'ZnCVO', 'r')
+    En_ky = mc.calc_disp(S, qK, p, 'ZnCVO', 'r')
 
     # Extract the data from the list along the [100] direction
     Ekx1 = [En_kx[i][0] for i in range(len(En_kx))]

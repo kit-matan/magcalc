@@ -5,7 +5,6 @@ Created on Mon Aug 13 01:22:57 2018
 
 @author: kmatan
 """
-import spin_model as sm
 import numpy as np
 from timeit import default_timer
 import magcalc as mc
@@ -20,7 +19,6 @@ def plot_HKmap(p, newcalc, E_intv):
     # spin-wave intensity S(Q,\omega)
     st = default_timer()
     S = 1.0 / 2.0  # spin value
-    Nspin = len(sm.atom_pos())  # number of spins in a unit cell
     a = 20.645
     b = 8.383
     c = 6.442
@@ -48,7 +46,7 @@ def plot_HKmap(p, newcalc, E_intv):
     print("A number of k-points is", len(q))
 
     if newcalc == 1:
-        qout, En, Sqwout = mc.calc_Sqw(S, q, p, Nspin, 'CVO', 'r')
+        qout, En, Sqwout = mc.calc_Sqw(S, q, p, 'CVO', 'r')
         with open('pckFiles/CVO_HKmap_En.pck', 'wb') as outEn:
                 outEn.write(pickle.dumps(En))
         with open('pckFiles/CVO_HKmap_Sqw.pck', 'wb') as outSqwout:
@@ -70,8 +68,6 @@ def plot_HKmap(p, newcalc, E_intv):
 
     X, Y = np.meshgrid(kx, ky)
     # intMat[intMat <= 0] = 1e-5
-    print(intMat.min())
-    print(intMat.max())
     plt.pcolormesh(X, Y, intMat, vmin=intMat.min(), vmax=intMat.max(), shading='auto')
     # plt.pcolormesh(X, Y, intMat, norm=LogNorm(vmin=intMat.min(), vmax=intMat.max()), cmap='PuBu_r')
     plt.xlim([min(kx), max(kx)])
@@ -86,6 +82,6 @@ def plot_HKmap(p, newcalc, E_intv):
 
 if __name__ == '__main__':
     print("Start: ", time.asctime(time.localtime()))
-    p = [2.49, 1.12 * 2.49, 2.03 * 2.49, 0.28, 0, 0, 2.67, 0, 0, 0, 0, 0, 0, 0, 0.0]
-    plot_HKmap(p, 0, [6, 7])
+    p = [2.49, 1.12 * 2.49, 2.03 * 2.49, 0.28, 2.67, 0.0]
+    plot_HKmap(p, 1, [6, 7])
     print("End: ", time.asctime(time.localtime()))

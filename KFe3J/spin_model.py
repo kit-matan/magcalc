@@ -20,20 +20,20 @@ from itertools import product
 
 def unit_cell():
     """a unit cell for the kagome lattice"""
-    va = np.mat([np.sqrt(3) / 2, -1 / 2, 0])
-    vb = np.mat([0, 1, 0])
-    vc = np.mat([0, 0, 1])
+    va = np.array([np.sqrt(3) / 2, -1 / 2, 0])
+    vb = np.array([0, 1, 0])
+    vc = np.array([0, 0, 1])
     uc = [va, vb, vc]
-    return uc
+    return np.array(uc)
 
 
 def atom_pos():
     """atomic positions for the kagome lattice"""
-    atom1 = np.mat([0, 0, 0])
-    atom2 = np.mat([np.sqrt(3) / 4, -1 / 4, 0])
-    atom3 = np.mat([0, 1 / 2, 0])
+    atom1 = np.array([0, 0, 0])
+    atom2 = np.array([np.sqrt(3) / 4, -1 / 4, 0])
+    atom3 = np.array([0, 1 / 2, 0])
     r_pos = [atom1, atom2, atom3]
-    return r_pos
+    return np.array(r_pos)
 
 
 def atom_pos_ouc():
@@ -42,7 +42,7 @@ def atom_pos_ouc():
     apos = atom_pos()
     apos_len = len(apos)
     r_pos_ouc = [apos[0], apos[1], apos[2]] + [apos[k] + i * uc[0] + j * uc[1] for i, j in product(range(-1, 2), repeat=2) if i != 0 or j != 0 for k in range(apos_len)]
-    return r_pos_ouc
+    return np.array(r_pos_ouc)
 
 
 def rot_mat(atom_list, p):
@@ -80,10 +80,7 @@ def spin_interactions(p):
        Input:
            p: list of parameters [J1, J2, Dy, Dz, H]""" 
     # Exchange interactions J's
-    J1 = p[0]
-    J2 = p[1]
-    Dy = p[2]
-    Dz = p[3]
+    J1, J2, Dy, Dz, H = p
     apos = atom_pos()
     N_atom = len(apos)
     apos_ouc = atom_pos_ouc()

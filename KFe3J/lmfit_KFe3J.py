@@ -10,7 +10,6 @@ fit the spin-wave data of KFe3J using lmfit package
 
 The data and results are from PRL 96, 247201 (2006).
 """
-import spin_model as sm
 import numpy as np
 import magcalc as mc
 from numpy import loadtxt
@@ -29,7 +28,7 @@ def sw_KFe3J(x, J1, J2, Dy, Dz, H):
             Dy: DM interaction constant along y
             Dz: DM interaction constant along z
             H: magnetic field along z"""
-    Nspin = 3
+
     S = 5.0/2.0
     p = np.array([J1, J2, Dy, Dz, H])
     k = []
@@ -47,7 +46,7 @@ def sw_KFe3J(x, J1, J2, Dy, Dz, H):
             sys.exit()
         qi = np.array([qx, qy, qz])
         k.append(qi)
-    En_k = mc.calc_disp(S, k, p, Nspin, 'KFe3J', 'r')
+    En_k = mc.calc_disp(S, k, p, 'KFe3J', 'r')
     En = []
     for i in range(len(x[:, 0])):
         Eni = En_k[i][int(x[i, 1])]
@@ -92,7 +91,6 @@ if __name__ == "__main__":
 
     # Plot the fitting result with the data
     S = 5.0 / 2.0
-    nspins = len(sm.atom_pos())
     qsx = np.arange(0, 2 * np.pi / np.sqrt(3) + 0.05, 0.05)
     qsy = np.arange(0, 2 * np.pi + 0.05, 0.05)
     q = []
@@ -102,7 +100,8 @@ if __name__ == "__main__":
     for i in range(len(qsy)):
         q1 = np.array([0, qsy[i], 0])
         q.append(q1)
-    En = mc.calc_disp(S, q, pfit, nspins, 'KFe3J', 'r')
+        
+    En = mc.calc_disp(S, q, pfit, 'KFe3J', 'r')
 
     Ekx1 = [En[i][0] for i in range(len(qsx))]
     Ekx2 = [En[i][1] for i in range(len(qsx))]

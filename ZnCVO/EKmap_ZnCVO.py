@@ -19,7 +19,6 @@ def plot_Sqw_EKmap(S, p, newcalc, wr):
     astr = 0.87101208
     bstr = 0.78257113
     cstr = 0.66266382
-    Nspin = len(sm.atom_pos())  # number of spins in a unit cell
 
     qsy = np.arange(1 - np.e / 1e5, 3 + 0.01, 0.01)
     q = []
@@ -28,7 +27,7 @@ def plot_Sqw_EKmap(S, p, newcalc, wr):
         q.append(q1)
             
     if newcalc == 1:
-        qout, En, Sqwout = mc.calc_Sqw(S, q, p, Nspin, 'ZnCVO', wr)
+        qout, En, Sqwout = mc.calc_Sqw(S, q, p, 'ZnCVO', wr)
         with open('pckFiles/ZnCVO_EKmap_En.pck', 'wb') as outEn:
             outEn.write(pickle.dumps(En))
         with open('pckFiles/ZnCVO_EKmap_Sqw.pck', 'wb') as outSqwout:

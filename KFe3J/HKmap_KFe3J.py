@@ -6,7 +6,6 @@ Created on Mon Aug 13 01:22:57 2018
 
 @author: Kit Matan
 """
-import spin_model as sm
 import numpy as np
 from timeit import default_timer
 import magcalc as mc
@@ -16,7 +15,7 @@ from matplotlib.colors import LogNorm
 import pickle
 
 
-def plot_hkmap(p, S, nspins, wr, newcalc, E_intv, qstep):
+def plot_hkmap(p, S, wr, newcalc, E_intv, qstep):
     """Spinwave intensity S(Q,\omega) 2D Q-map
         Inputs:
             p: list of parameters
@@ -36,7 +35,7 @@ def plot_hkmap(p, S, nspins, wr, newcalc, E_intv, qstep):
     print("A total number of q points: ", len(q))
 
     if newcalc == 1:
-        qout, En, Sqwout = mc.calc_Sqw(S, q, p, nspins, 'KFe3J', wr)
+        qout, En, Sqwout = mc.calc_Sqw(S, q, p, 'KFe3J', wr)
         with open('pckFiles/KFe3J_HKmap_En.pck', 'wb') as outEn:
             outEn.write(pickle.dumps(En))
         with open('pckFiles/KFe3J_HKmap_Sqw.pck', 'wb') as outSqwout:
@@ -75,12 +74,11 @@ if __name__ == "__main__":
     # S = 1.0 / 2.0
     # p = [12.8, -1.23, 0.063 * 12.8, -0.25 * 12.8, 0]
 
-    nspins = len(sm.atom_pos())  # number of spins in a unit cell
-    e_inv = [21,23]
+    e_inv = [8,10]
     
     ############# DO NOT CHANGE ######################
-    q_step = 0.01
-    plot_hkmap(p, S, nspins, 'r', 0, e_inv, q_step)
+    q_step = 0.1
+    plot_hkmap(p, S, 'r', 1, e_inv, q_step)
     ##################################################
     
     et_main = default_timer()

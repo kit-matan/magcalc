@@ -6,7 +6,6 @@ Created on Mon Aug 13 01:22:57 2018
 @author: Ganatee Gitgeatpong and Kit Matan
 This work is based on the paper PRB 106, 214438 (2022).
 """
-import spin_model as sm
 import numpy as np
 from timeit import default_timer
 import magcalc as mc
@@ -22,7 +21,6 @@ def plot_Sqw_EHmap(S, p, newcalc, wr):
     bstr = 0.78257113
     cstr = 0.66266382
     beta = 110.251999
-    Nspin = len(sm.atom_pos())  # number of spins in a unit cell
 
     qsx = np.arange(0 - np.e / 1e5, 1 + 0.01, 0.01)
     q = []
@@ -36,7 +34,7 @@ def plot_Sqw_EHmap(S, p, newcalc, wr):
         q.append(q1)
     
     if newcalc == 1:
-        qout, En, Sqwout = mc.calc_Sqw(S, q, p, Nspin, 'ZnCVO', wr)
+        qout, En, Sqwout = mc.calc_Sqw(S, q, p, 'ZnCVO', wr)
         with open('pckFiles/ZnCVO_EQmap_En.pck', 'wb') as outEn:
             outEn.write(pickle.dumps(En))
         with open('pckFiles/ZnCVO_EQmap_Sqw.pck', 'wb') as outSqwout:

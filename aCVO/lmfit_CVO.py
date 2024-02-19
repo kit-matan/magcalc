@@ -8,7 +8,6 @@ Created on Mon Aug 20 15:11:17 2018
 fit the spin-wave data of alpha-Cu2V2O7
 The data and results are from PRL 119, 047201 (2017).
 """
-import spin_model as sm
 import numpy as np
 import magcalc as mc
 from numpy import loadtxt
@@ -19,9 +18,9 @@ from lmfit import Model
 
 
 def sw_CVO(x, J1, J2, J3, G1, Dx, H):
-    Nspin = len(sm.atom_pos())
+    
     S = 1.0 / 2.0
-    p = [J1, J2, J3, G1, 0, 0, Dx, 0, 0, 0, 0, 0, 0, 0, H]
+    p = [J1, J2, J3, G1, Dx, H]
     k = []
     for i in range(len(x[:, 0])):
         if x[i, 2] == 1:
@@ -41,7 +40,7 @@ def sw_CVO(x, J1, J2, J3, G1, Dx, H):
             sys.exit()
         q1 = np.array([qx, qy, qz])
         k.append(q1)
-    En_k = mc.calc_disp(S, k, p, Nspin, 'CVO', 'r')
+    En_k = mc.calc_disp(S, k, p, 'CVO', 'r')
     En = []
     for i in range(len(x[:, 0])):
         En1 = En_k[i][int(x[i, 1]-1)]
@@ -53,7 +52,8 @@ def sw_CVO(x, J1, J2, J3, G1, Dx, H):
 if __name__ == "__main__":
     st = default_timer()
     data = loadtxt('data/sw_aCVO.txt', comments="#", delimiter=',', unpack=False, dtype=float)
-    p = [2.65522, 2.97384, 5.39009, 0.293822, 2.86330, 0]
+    #p = [2.65522, 2.97384, 5.39009, 0.293822, 2.86330, 0]
+    p = [2.49, 1.12 * 2.49, 2.03 * 2.49, 0.28, 2.67, 0.0]
     x = np.zeros((len(data[:, 0]), 4))
     x[:, 0] = data[:, 0]
     y = data[:, 1]
@@ -62,8 +62,9 @@ if __name__ == "__main__":
     x[:, 2] = data[:, 4]
     x[:, 3] = y
 
-    # fit the data using lmfit
     sw_model = Model(sw_CVO)
+    
+    # fit the data using lmfit
     params = sw_model.make_params(J1=p[0], J2=p[1], J3=p[2], G1=p[3], Dx=p[4], H=p[5])
     params.add('J2', value=p[1], vary=False)
     params.add('J3', value=p[2], vary=False)
@@ -102,7 +103,7 @@ if __name__ == "__main__":
          result.params['J3'].value, result.params['G1'].value,
          result.params['Dx'].value, result.params['H'].value]
     print(result.fit_report())
-
+    
     params = sw_model.make_params(J1=p[0], J2=p[1], J3=p[2], G1=p[3], Dx=p[4], H=p[5])
     params.add('J1', value=p[0], vary=False)
     params.add('J2', value=p[1], vary=False)
@@ -116,11 +117,10 @@ if __name__ == "__main__":
     print(result.fit_report())
     
     pfit = [result.params['J1'].value, result.params['J2'].value, 
-            result.params['J3'].value, result.params['G1'].value, 0, 0,
-            result.params['Dx'].value, 0, 0, 0, 0, 0, 0, 0, result.params['H'].value]
-
+            result.params['J3'].value, result.params['G1'].value,
+            result.params['Dx'].value, result.params['H'].value]
+        
     S = 1.0 / 2.0
-    Nspin = 16
     qsy = np.arange(1, 3 + 0.02, 0.02)
     q = []
     for i in range(len(qsy)):
@@ -129,7 +129,7 @@ if __name__ == "__main__":
         qz = 0
         q1 = [qx, qy, qz]
         q.append(q1)
-    En_ky = mc.calc_disp(S, q, pfit, Nspin, 'CVO', 'r')
+    En_ky = mc.calc_disp(S, q, pfit, 'CVO', 'r')
 
     Eky1 = [En_ky[i][0] for i in range(len(En_ky))]
     Eky2 = [En_ky[i][1] for i in range(len(En_ky))]

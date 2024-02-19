@@ -25,13 +25,13 @@ def unit_cell():
     cx = caxis*np.cos(math.radians(beta))
     cz = caxis*np.sin(math.radians(beta))
     uc = []
-    va = np.mat([aaxis, 0, 0])
-    vb = np.mat([0, baxis, 0])
-    vc = np.mat([cx, 0, cz])
+    va = np.array([aaxis, 0, 0])
+    vb = np.array([0, baxis, 0])
+    vc = np.array([cx, 0, cz])
     uc.append(va)
     uc.append(vb)
     uc.append(vc)
-    return uc
+    return np.array(uc)
 
 
 def atom_pos():
@@ -50,32 +50,33 @@ def atom_pos():
     i = 0
     j = 0
     k = 0
-    atom1 = np.mat([a*(i+u) + c*(k+w)*np.cos(math.radians(beta)), b*(j+v), c*(k+w)*np.sin(math.radians(beta))]) #1 down
-    atom2 = np.mat([a*(i+1-u) + c*(k+1-w)*np.cos(math.radians(beta)), b*(j+1-v), c*(k+1-w)*np.sin(math.radians(beta))]) #5 up
-    atom3 = np.mat([a*(i+1-u) + c*(k+1-w+1/2)*np.cos(math.radians(beta)), b*(j+v), c*(k+1-w+1/2)*np.sin(math.radians(beta))]) #3 down
-    atom4 = np.mat([a*(i+u) + c*(k-1+w+1/2)*np.cos(math.radians(beta)), b*(j+1-v), c*(k-1+w+1/2)*np.sin(math.radians(beta))]) #6 up --#1 ***J5
-    atom5 = np.mat([a*(i+u+1/2) + c*(k+w)*np.cos(math.radians(beta)), b*(j+v+1/2), c*(k+w)*np.sin(math.radians(beta))]) #2 down
-    atom6 = np.mat([a*(i-u+1/2) + c*(k+1-w)*np.cos(math.radians(beta)), b*(j-v+1/2), c*(k+1-w)*np.sin(math.radians(beta))]) #7 up --#1 ***J6
-    atom7 = np.mat([a*(i-u+1/2) + c*(k+1-w+1/2)*np.cos(math.radians(beta)), b*(j+v+1/2), c*(k+1-w+1/2)*np.sin(math.radians(beta))]) #4 down --#7 ***J5
-    atom8 = np.mat([a*(i+u+1/2) + c*(k-1+w+1/2)*np.cos(math.radians(beta)), b*(j-v+1/2), c*(k-1+w+1/2)*np.sin(math.radians(beta))]) #8 up
+    atom1 = np.array([a*(i+u) + c*(k+w)*np.cos(math.radians(beta)), b*(j+v), c*(k+w)*np.sin(math.radians(beta))]) #1 down
+    atom2 = np.array([a*(i+1-u) + c*(k+1-w)*np.cos(math.radians(beta)), b*(j+1-v), c*(k+1-w)*np.sin(math.radians(beta))]) #5 up
+    atom3 = np.array([a*(i+1-u) + c*(k+1-w+1/2)*np.cos(math.radians(beta)), b*(j+v), c*(k+1-w+1/2)*np.sin(math.radians(beta))]) #3 down
+    atom4 = np.array([a*(i+u) + c*(k-1+w+1/2)*np.cos(math.radians(beta)), b*(j+1-v), c*(k-1+w+1/2)*np.sin(math.radians(beta))]) #6 up --#1 ***J5
+    atom5 = np.array([a*(i+u+1/2) + c*(k+w)*np.cos(math.radians(beta)), b*(j+v+1/2), c*(k+w)*np.sin(math.radians(beta))]) #2 down
+    atom6 = np.array([a*(i-u+1/2) + c*(k+1-w)*np.cos(math.radians(beta)), b*(j-v+1/2), c*(k+1-w)*np.sin(math.radians(beta))]) #7 up --#1 ***J6
+    atom7 = np.array([a*(i-u+1/2) + c*(k+1-w+1/2)*np.cos(math.radians(beta)), b*(j+v+1/2), c*(k+1-w+1/2)*np.sin(math.radians(beta))]) #4 down --#7 ***J5
+    atom8 = np.array([a*(i+u+1/2) + c*(k-1+w+1/2)*np.cos(math.radians(beta)), b*(j-v+1/2), c*(k-1+w+1/2)*np.sin(math.radians(beta))]) #8 up
 
-    # atom1 = np.mat([-1.98639, 4.60570, 9.34830])      d
-    # atom2 = np.mat([1.85811,   0.59125,   9.34830])   d
-    # atom3 = np.mat([-0.23720,   3.42320,   4.60745])  u
-    # atom4 = np.mat([0.58334,   0.59125,   4.87426])   d
-    # atom5 = np.mat([3.60730,   7.43765,   4.60745])   u
-    # atom6 = np.mat([4.42784,   4.60570,   4.87426])   d
-    # atom7 = np.mat([2.33252,   7.43765,   0.13341])   u
-    # atom8 = np.mat([6.17702,   3.42320,   0.13341])   u
-   # PURE: _space_group_symop_operation_xyz
-   # 'x, y, z'                  atom5   d plane A
-   # '-x, -y, -z'               atom4   u
-   # '-x, y, -z+1/2'            atom2   d
-   # 'x, -y, z+1/2'             atom7   u plane A
-   # 'x+1/2, y+1/2, z'          atom6   d
-   # '-x+1/2, -y+1/2, -z'       atom3   u plane A
-   # '-x+1/2, y+1/2, -z+1/2'    atom1   d plane A
-   # 'x+1/2, -y+1/2, z+1/2'     atom8   u
+    # atom1 = np.array([-1.98639, 4.60570, 9.34830])      d
+    # atom2 = np.array([1.85811,   0.59125,   9.34830])   d
+    # atom3 = np.array([-0.23720,   3.42320,   4.60745])  u
+    # atom4 = np.array([0.58334,   0.59125,   4.87426])   d
+    # atom5 = np.array([3.60730,   7.43765,   4.60745])   u
+    # atom6 = np.array([4.42784,   4.60570,   4.87426])   d
+    # atom7 = np.array([2.33252,   7.43765,   0.13341])   u
+    # atom8 = np.array([6.17702,   3.42320,   0.13341])   u
+    # _space_group_symop_operation_xyz
+    # 'x, y, z'                  atom5   d plane A
+    # '-x, -y, -z'               atom4   u
+    # '-x, y, -z+1/2'            atom2   d
+    # 'x, -y, z+1/2'             atom7   u plane A
+    # 'x+1/2, y+1/2, z'          atom6   d
+    # '-x+1/2, -y+1/2, -z'       atom3   u plane A
+    # '-x+1/2, y+1/2, -z+1/2'    atom1   d plane A
+    # 'x+1/2, -y+1/2, z+1/2'     atom8   u
+   
     r_pos.append(atom1)
     r_pos.append(atom2)
     r_pos.append(atom3)
@@ -84,7 +85,7 @@ def atom_pos():
     r_pos.append(atom6)
     r_pos.append(atom7)
     r_pos.append(atom8)
-    return r_pos
+    return np.array(r_pos)
 
 def atom_pos_ouc():
     """atomic positions outside the unit cell"""
@@ -112,23 +113,23 @@ def atom_pos_ouc():
                 if i == 0 and j == 0 and k ==0:  # first set of spins are in the unit cell
                     pass
                 else:
-                    r_pos1_ij = np.mat([a*(i+u) + c*(k+w)*np.cos(math.radians(beta)), b*(j+v), c*(k+w)*np.sin(math.radians(beta))])
+                    r_pos1_ij = np.array([a*(i+u) + c*(k+w)*np.cos(math.radians(beta)), b*(j+v), c*(k+w)*np.sin(math.radians(beta))])
                     r_pos_ouc.append(r_pos1_ij)                       
-                    r_pos2_ij = np.mat([a*(i+1-u) + c*(k+1-w)*np.cos(math.radians(beta)), b*(j+1-v), c*(k+1-w)*np.sin(math.radians(beta))])
+                    r_pos2_ij = np.array([a*(i+1-u) + c*(k+1-w)*np.cos(math.radians(beta)), b*(j+1-v), c*(k+1-w)*np.sin(math.radians(beta))])
                     r_pos_ouc.append(r_pos2_ij)
-                    r_pos3_ij = np.mat([a*(i+1-u) + c*(k+1-w+1/2)*np.cos(math.radians(beta)), b*(j+v), c*(k+1-w+1/2)*np.sin(math.radians(beta))])
+                    r_pos3_ij = np.array([a*(i+1-u) + c*(k+1-w+1/2)*np.cos(math.radians(beta)), b*(j+v), c*(k+1-w+1/2)*np.sin(math.radians(beta))])
                     r_pos_ouc.append(r_pos3_ij)
-                    r_pos4_ij = np.mat([a*(i+u) + c*(k-1+w+1/2)*np.cos(math.radians(beta)), b*(j+1-v), c*(k-1+w+1/2)*np.sin(math.radians(beta))])
+                    r_pos4_ij = np.array([a*(i+u) + c*(k-1+w+1/2)*np.cos(math.radians(beta)), b*(j+1-v), c*(k-1+w+1/2)*np.sin(math.radians(beta))])
                     r_pos_ouc.append(r_pos4_ij)
-                    r_pos5_ij = np.mat([a*(i+u+1/2) + c*(k+w)*np.cos(math.radians(beta)), b*(j+v+1/2), c*(k+w)*np.sin(math.radians(beta))])
+                    r_pos5_ij = np.array([a*(i+u+1/2) + c*(k+w)*np.cos(math.radians(beta)), b*(j+v+1/2), c*(k+w)*np.sin(math.radians(beta))])
                     r_pos_ouc.append(r_pos5_ij)
-                    r_pos6_ij = np.mat([a*(i-u+1/2) + c*(k+1-w)*np.cos(math.radians(beta)), b*(j-v+1/2), c*(k+1-w)*np.sin(math.radians(beta))])
+                    r_pos6_ij = np.array([a*(i-u+1/2) + c*(k+1-w)*np.cos(math.radians(beta)), b*(j-v+1/2), c*(k+1-w)*np.sin(math.radians(beta))])
                     r_pos_ouc.append(r_pos6_ij)
-                    r_pos7_ij = np.mat([a*(i-u+1/2) + c*(k+1-w+1/2)*np.cos(math.radians(beta)), b*(j+v+1/2), c*(k+1-w+1/2)*np.sin(math.radians(beta))])
+                    r_pos7_ij = np.array([a*(i-u+1/2) + c*(k+1-w+1/2)*np.cos(math.radians(beta)), b*(j+v+1/2), c*(k+1-w+1/2)*np.sin(math.radians(beta))])
                     r_pos_ouc.append(r_pos7_ij)
-                    r_pos8_ij = np.mat([a*(i+u+1/2) + c*(k-1+w+1/2)*np.cos(math.radians(beta)), b*(j-v+1/2), c*(k-1+w+1/2)*np.sin(math.radians(beta))])
+                    r_pos8_ij = np.array([a*(i+u+1/2) + c*(k-1+w+1/2)*np.cos(math.radians(beta)), b*(j-v+1/2), c*(k-1+w+1/2)*np.sin(math.radians(beta))])
                     r_pos_ouc.append(r_pos8_ij)
-    return r_pos_ouc
+    return np.array(r_pos_ouc)
 
 
 def rot_mat(atom_list, p):

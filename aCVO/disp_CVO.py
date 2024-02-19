@@ -6,7 +6,6 @@ Created on Mon Aug 13 01:18:18 2018
 
 @author: Kit Matan
 """
-import spin_model as sm
 import numpy as np
 from timeit import default_timer
 import matplotlib.pyplot as plt
@@ -15,8 +14,7 @@ import magcalc as mc
 if __name__ == "__main__":
     st = default_timer()
     S = 1.0 / 2.0  # spin value
-    p = [2.49, 1.12 * 2.49, 2.03 * 2.49, 0.28, 0, 0, 2.67, 0, 0, 0, 0, 0, 0, 0, 0.0]
-    Nspin = len(sm.atom_pos())  # number of spins in a unit cell
+    p = [2.49, 1.12 * 2.49, 2.03 * 2.49, 0.28, 2.67, 0.0]
 
     qsy = np.arange(1, 3 + 0.02, 0.02)
     q = []
@@ -26,7 +24,7 @@ if __name__ == "__main__":
         qz = 0
         q1 = [qx, qy, qz]
         q.append(q1)
-    En_ky = mc.calc_disp(S, q, p, Nspin, 'CVO', 'w')
+    En_ky = mc.calc_disp(S, q, p, 'CVO', 'w')
 
     Eky1 = [En_ky[i][0] for i in range(len(En_ky))]
     Eky2 = [En_ky[i][1] for i in range(len(En_ky))]

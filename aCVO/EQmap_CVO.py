@@ -6,7 +6,6 @@ Created on Mon Aug 13 01:22:57 2018
 
 @author: Kit Matan
 """
-import spin_model as sm
 import numpy as np
 from timeit import default_timer
 import magcalc as mc
@@ -17,9 +16,8 @@ if __name__ == '__main__':
     # spin-wave intensity S(Q,\omega)
     st = default_timer()
     S = 1.0 / 2.0  # spin value
-    # p = [2.49, 1.12 * 2.49, 2.03 * 2.49, 0.28, 0, 0, 2.67, 0, 0, 0, 0, 0, 0, 0, -3.0]
-    p = [2.49, 1.12 * 2.49, 2.03 * 2.49, 0.28, 0, 0, 2.67, 0, 0, 0, 0, 0, 0, 0, 0.0]
-    Nspin = len(sm.atom_pos())  # number of spins in a unit cell
+    # p = [2.49, 1.12 * 2.49, 2.03 * 2.49, 0.28, 2.67, 3.0]
+    p = [2.49, 1.12 * 2.49, 2.03 * 2.49, 0.28, 2.67, 0.0]
     shift = 1e-5
 
     la = 20.645
@@ -50,7 +48,7 @@ if __name__ == '__main__':
         q.append(q1)
     """
 
-    qout_ky, En_ky, Sqwout_ky = mc.calc_Sqw(S, q, p, Nspin, 'CVO', 'r')
+    qout_ky, En_ky, Sqwout_ky = mc.calc_Sqw(S, q, p, 'CVO', 'r')
 
     Ex = np.arange(emin, emax, estep)
     wid = 0.2

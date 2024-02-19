@@ -24,7 +24,7 @@ def sw_ZnCVO(x, J1, J2, J3, J4, J5, J6, J7, G, H):
     bstr = 0.78257113
     cstr = 0.66266382
     beta = 110.251999
-    Nspin = len(sm.atom_pos())  # number of spins in a unit cell
+
     S = 1.0 / 2.0
     p = [J1, J2, J3, J4, J5, J6, J7, G, H]
     k = []
@@ -42,7 +42,7 @@ def sw_ZnCVO(x, J1, J2, J3, J4, J5, J6, J7, G, H):
             sys.exit()
         q1 = np.array([qx, qy, qz])
         k.append(q1)
-    En_k = mc.calc_disp(S, k, p, Nspin, 'ZnCVO', 'r')
+    En_k = mc.calc_disp(S, k, p, 'ZnCVO', 'r')
     En = []
     for i in range(len(x[:, 0])):
         En1 = En_k[i][int(x[i, 1]-1)]
@@ -187,12 +187,12 @@ if __name__ == "__main__":
         qz1 = qsx[i] * cstr * np.sin(math.radians(beta-90))
         q1 = [qx1, qy1, qz1]
         qH.append(q1)
-    En_kx = mc.calc_disp(S, qH, pfit, Nspin, 'ZnCVO', 'r')
+    En_kx = mc.calc_disp(S, qH, pfit, 'ZnCVO', 'r')
     # calculate dispersion along K
     for i in range(len(qsy)):
         q2 = [0, qsy[i] * bstr, 0]
         qK.append(q2)
-    En_ky = mc.calc_disp(S, qK, p, Nspin, 'ZnCVO', 'r')
+    En_ky = mc.calc_disp(S, qK, p, 'ZnCVO', 'r')
 
     Ekx1 = [En_kx[i][0] for i in range(len(En_kx))]
     Ekx2 = [En_kx[i][1] for i in range(len(En_kx))]

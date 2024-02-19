@@ -8,6 +8,7 @@
     - SciPy
     - Matplotlib
     - lmfit
+    - tqdm
 
 
 ### File Description:
