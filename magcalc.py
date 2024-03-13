@@ -125,13 +125,13 @@ def gen_HM(k, S, params):
     XdX_subs = [[Xd[i] * X[j], XdX[i * 2 * nspins + j]] for i in range(2 * nspins) for j in range(2 * nspins)]
     
     # substitution Fourier transform, and commutation relations
-    print('Running the subtitution ...')
+    print('Running substitution ...')
     st = timeit.default_timer()
     # Convert the Hamiltonian into a list of ordered terms
     HM_terms = HM.as_ordered_terms()
     # Use multiprocessing to substitute the Fourier transform into each term of the Hamiltonian
     with Pool() as pool:
-        with tqdm(total=len(HM_terms), desc="Substituting") as pbar:
+        with tqdm(total=len(HM_terms), desc="Substituting", bar_format='{percentage:3.0f}% Complete | Elapsed Time: {elapsed}') as pbar:  # Set total to 100
             HMk_terms = []
             for result in pool.imap(substitute_expr, [(expr, fourier_dict) for expr in HM_terms]):
                 HMk_terms.append(result)
@@ -140,7 +140,7 @@ def gen_HM(k, S, params):
     HMk = HMk.expand()
     HMk_terms = HMk.as_ordered_terms()
     with Pool() as pool:
-        with tqdm(total=len(HMk_terms), desc="Substituting") as pbar:
+        with tqdm(total=len(HMk_terms), desc="Substituting", bar_format='{percentage:3.0f}% Complete | Elapsed Time: {elapsed}') as pbar:
             HMk_comm_terms = []
             for result in pool.imap(substitute_expr, [(expr, comm_dict) for expr in HMk_terms]):
                 HMk_comm_terms.append(result)
@@ -150,7 +150,7 @@ def gen_HM(k, S, params):
     HMk_comm_terms = HMk_comm.as_ordered_terms()
     # Use multiprocessing to substitute the Fourier transform into each term of the Hamiltonian
     with Pool() as pool:
-        with tqdm(total=len(HMk_comm_terms), desc="Substituting") as pbar:
+        with tqdm(total=len(HMk_comm_terms), desc="Substituting", bar_format='{percentage:3.0f}% Complete | Elapsed Time: {elapsed}') as pbar:
             HMk_comm_XdX_terms = []
             for result in pool.imap(substitute_expr, [(expr, XdX_subs) for expr in HMk_comm_terms]):
                 HMk_comm_XdX_terms.append(result)
@@ -158,7 +158,7 @@ def gen_HM(k, S, params):
     # Combine the transformed terms back into a single expression
     HMk_comm_XdX = Add(*HMk_comm_XdX_terms)
     et = timeit.default_timer()
-    print('Run-time for the substitution: ', np.round((et - st) / 60, 2), ' min.')
+    print('Run-time for substitution: ', np.round((et - st) / 60, 2), ' min.')
  
     # extract the coefficients in front of the 2nd order terms
     H2_matrix_elements = sp.Matrix([HMk_comm_XdX.coeff(x) for x in XdX])
@@ -371,7 +371,7 @@ def process_matrix(rd_or_wr, k, S, params, file):
     # call gen_HM to create the matrix to calculate spin-waves
     # or read the matrix from a file previously saved
     if rd_or_wr == 'w':
-        print('Generating the matrix ...')
+        print('Generating a matrix ...')
         HMat, Ud = gen_HM(k, S, params)  # this function takes a very long time!!!
         # write Hamiltonian to a file 
         with open('pckFiles/' + file + '_HM.pck', 'wb') as outHM:
@@ -380,7 +380,7 @@ def process_matrix(rd_or_wr, k, S, params, file):
             outUd.write(pickle.dumps(Ud))
     elif rd_or_wr == 'r':
         # read Hamiltonian from a file
-        print('Reading the matrix from a file ...')
+        print('Importing a matrix from a file ...')
         with open('pckFiles/' + file + '_HM.pck', 'rb') as inHM:
             HMat = pickle.loads(inHM.read())
         with open('pckFiles/' + file + '_Ud.pck', 'rb') as inUd:
@@ -474,19 +474,19 @@ def calc_Sqw(Sp, q, p, file, rd_or_wr):
     Ud = Ud.subs(param_subs, simultaneous=True).evalf()
     Ud = np.mat(Ud).astype(np.float_)
 
-    print('Running the diagonalization ...')
+    print('Running diagonalization ...')
     st = timeit.default_timer()
     # multiprocessing
     with Pool() as pool:
         args = [(HMat, Ud, k, q[i], nspins, Sp) for i in range(len(q))]
-        with tqdm(total=len(q), desc="Diagonalization") as pbar:
+        with tqdm(total=len(q), desc="Diagonalization", bar_format='{percentage:3.0f}% Complete | Elapsed Time: {elapsed}') as pbar:
             cal_results = []
             for result in pool.imap(process_calc_Sqw, args):
                 cal_results.append(result)
                 pbar.update()
     qout, En, Sqwout = zip(*cal_results)
     et = timeit.default_timer()
-    print('Run-time for the diagonalization: ', np.round((et - st) / 60, 2))
+    print('Run-time for diagonalization: ', np.round((et - st) / 60, 2))
 
     return qout, En, Sqwout
 
@@ -528,8 +528,7 @@ def calc_disp(Sp, q, p, file, rd_or_wr):
         Outputs:
             En: energy"""
 
-    print('Running the diagonalization ...')
-
+    print('Calculating magnon dispersion ...')
     nspins = len(sm.atom_pos())
     kx, ky, kz = sp.symbols('kx ky kz', real=True)
     k = [kx, ky, kz]
@@ -543,16 +542,17 @@ def calc_disp(Sp, q, p, file, rd_or_wr):
     param_subs = [[S, Sp]] + [[params[i], p[i]] for i in range(len(p))]
     HMat = HMat.subs(param_subs, simultaneous=True).evalf()
 
+    print('Running diagonalization ...')
     st = timeit.default_timer()
     # multiprocessing
     with Pool() as pool:
         args = [(HMat, k, q_i, nspins) for q_i in q]
-        with tqdm(total=len(q), desc="Diagonalization") as pbar:
+        with tqdm(total=len(q), desc="Diagonalization", bar_format='{percentage:3.0f}% Complete | Elapsed Time: {elapsed}') as pbar:
             En = []
             for result in pool.imap(process_calc_disp, args):
                 En.append(result)
                 pbar.update()
     et = timeit.default_timer()
-    print('Run-time for the diagonalization: ', np.round((et - st) / 60, 2))
+    print('Run-time for diagonalization: ', np.round((et - st) / 60, 2))
 
     return En

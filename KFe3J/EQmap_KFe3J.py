@@ -25,10 +25,10 @@ def plot_map(p, S, wr, newcalc):
             wr: 'w' for write to file, 'r' for read from file
             newcalc: 1 for new calculation, 0 for reading from file"""
     intv = 0.05
-    # qsx = np.arange(0 - intv / 2 , 2 * np.pi / np.sqrt(3) + intv / 2, intv)
-    # qsy = np.arange(0 - intv / 2, 2 * np.pi + intv / 2 ,intv)
     qsx = np.arange(-np.pi / np.sqrt(3) - intv / 2, 2 * np.pi / np.sqrt(3) + intv / 2, intv)
     qsy = np.arange(-np.pi - intv / 2, 2 * np.pi + intv / 2, intv)
+    # qsy = np.arange(-np.pi / np.sqrt(3) - intv / 2, 2 * np.pi / np.sqrt(3) + intv / 2, intv)
+    # qsx = np.arange(-np.pi - intv / 2, 2 * np.pi + intv / 2, intv)
     q = []
     for i in range(len(qsx)):
         q.append(np.array([qsx[i], 0, 0]))

@@ -25,6 +25,8 @@ def plot_disp(p, S, wr):
     intv = 0.05
     qsx = np.arange(0 - intv / 2 , 2 * np.pi / np.sqrt(3) + intv / 2, intv)
     qsy = np.arange(0 - intv / 2, 2 * np.pi + intv / 2 ,intv)
+    #qsy = np.arange(0 - intv / 2 , 2 * np.pi / np.sqrt(3) + intv / 2, intv)
+    #qsx = np.arange(0 - intv / 2, 2 * np.pi + intv / 2 ,intv)
     q = []
     for i in range(len(qsx)):
         q1 = np.array([qsx[i], 0, 0])
@@ -64,10 +66,10 @@ if __name__ == "__main__":
     st_main = default_timer()
     # KFe3Jarosite
     S = 5.0 / 2.0  # spin value
+    p = [3.23, 0.11, 0.218, -0.195, 0]
     # CCSF
     # S = 1.0 / 2.0
     # p = [12.8, -1.23, 0.063 * 12.8, -0.25 * 12.8, 0]
-    p = [3.23, 0.11, 0.218, -0.195, 0]
     plot_disp(p, S, 'w')
     et_main = default_timer()
     print('Total run-time: ', np.round((et_main-st_main) / 60, 2), ' min.')
