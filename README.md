@@ -4,7 +4,7 @@
 ### Requirement:
   - **Python3**
     - SymPy
-    - NumPy
+    - NumPy (1.x)
     - SciPy
     - Matplotlib
     - lmfit
